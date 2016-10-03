@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loading_layout"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:visibility="gone"
+    >
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loading1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorName="PacmanIndicator"
+        app:indicatorColor="#F3CC03"
+        android:layout_centerHorizontal="true"
+        />
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loading2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorName="PacmanIndicator"
+        android:layout_toLeftOf="@id/loading1"
+        app:indicatorColor="#1EC4D8"
+        />
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loading3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorName="PacmanIndicator"
+        app:indicatorColor="#F19E05"
+        android:layout_toRightOf="@id/loading1"
+        />
+</RelativeLayout>

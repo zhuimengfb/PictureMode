@@ -1,3 +1,14 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <string name="app_name">PictureMode</string>
+    <string name="skip">SKIP</string>
+    <string name="explore">NEW</string>
+    <string name="collections">COLLECTIONS</string>
+    <string name="me">ME</string>
+    <string name="camera">CAMERA</string>
+    <string name="camera_info">Taken by <xliff:g id="camera">%s</xliff:g> with exposure time: <xliff:g id="exposure_time">%s</xliff:g>
+        , aperture: <xliff:g id="aperture">%s</xliff:g>, focal length: <xliff:g id="focal_length">%s</xliff:g>
+        , iso: <xliff:g id="iso">%s</xliff:g>
+    </string>
+    <string name="related_pictures">OTHER PICTURES</string>
+
 </resources>
