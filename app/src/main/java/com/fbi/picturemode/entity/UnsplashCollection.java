@@ -16,13 +16,26 @@ public class UnsplashCollection implements Serializable {
 
   private int id;
   private String title;
+  private String description;
+
   @JsonProperty("published_at")
   private Date publishTime;
+  @JsonProperty("total_photos")
+  private int totalPhotos;
   private boolean curated;
+  private boolean featured;
+  @JsonProperty("private")
+  private boolean isPrivate;
+  @JsonProperty("share_key")
+  private String shareKey;
   @JsonProperty("cover_photo")
   private UnsplashPicture cover;
 
   private UnsplashUser user;
+
+  private String photos;
+
+  private String relatedCollections;
 
   public int getId() {
     return id;
@@ -40,6 +53,14 @@ public class UnsplashCollection implements Serializable {
     this.title = title;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public Date getPublishTime() {
     return publishTime;
   }
@@ -48,12 +69,44 @@ public class UnsplashCollection implements Serializable {
     this.publishTime = publishTime;
   }
 
+  public int getTotalPhotos() {
+    return totalPhotos;
+  }
+
+  public void setTotalPhotos(int totalPhotos) {
+    this.totalPhotos = totalPhotos;
+  }
+
   public boolean isCurated() {
     return curated;
   }
 
   public void setCurated(boolean curated) {
     this.curated = curated;
+  }
+
+  public boolean isFeatured() {
+    return featured;
+  }
+
+  public void setFeatured(boolean featured) {
+    this.featured = featured;
+  }
+
+  public boolean isPrivate() {
+    return isPrivate;
+  }
+
+  public void setPrivate(boolean aPrivate) {
+    isPrivate = aPrivate;
+  }
+
+  public String getShareKey() {
+    return shareKey;
+  }
+
+  public void setShareKey(String shareKey) {
+    this.shareKey = shareKey;
   }
 
   public UnsplashPicture getCover() {
@@ -70,5 +123,21 @@ public class UnsplashCollection implements Serializable {
 
   public void setUser(UnsplashUser user) {
     this.user = user;
+  }
+
+  public String getPhotos() {
+    return photos;
+  }
+
+  public void setPhotos(String photos) {
+    this.photos = photos;
+  }
+
+  public String getRelatedCollections() {
+    return relatedCollections;
+  }
+
+  public void setRelatedCollections(String relatedCollections) {
+    this.relatedCollections = relatedCollections;
   }
 }

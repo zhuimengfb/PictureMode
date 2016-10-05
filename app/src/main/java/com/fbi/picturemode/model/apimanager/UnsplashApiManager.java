@@ -39,4 +39,17 @@ public class UnsplashApiManager extends BaseApiManager {
       pageNum) {
     return unsplashApiService.getUserPictures(userName, page, pageNum);
   }
+
+  public static Observable<List<UnsplashPicture>> getCollectionPictures(int collectionId, int
+      page, int pageNum) {
+    return unsplashApiService.getCollectionPictures(collectionId, page, pageNum);
+  }
+
+  public static Observable<UnsplashCollection> getDetailCollection(int collectionId) {
+    return unsplashApiService.getDetailCollection(collectionId);
+  }
+
+  public static Observable<List<UnsplashCollection>> getRelatedCollections(int collectionId) {
+    return unsplashApiService.getRelatedCollections(collectionId);
+  }
 }

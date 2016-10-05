@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.entity.UnsplashLocation;
 import com.fbi.picturemode.entity.UnsplashPicture;
+import com.fbi.picturemode.utils.Constants;
 import com.fbi.picturemode.utils.GlideUtils;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
@@ -31,6 +32,14 @@ public class NewPictureRecyclerAdapter extends UltimateViewAdapter<NewPictureRec
 
   private Context context;
   private List<UnsplashPicture> unsplashPictures;
+  private int mode;
+
+  public void setMode(int mode) {
+    if (unsplashPictures != null && unsplashPictures.size() > 0) {
+      this.mode = mode;
+      this.notifyDataSetChanged();
+    }
+  }
 
   public NewPictureRecyclerAdapter(Context context, List<UnsplashPicture> unsplashPictures) {
     this.context = context;
@@ -63,9 +72,9 @@ public class NewPictureRecyclerAdapter extends UltimateViewAdapter<NewPictureRec
   public void onBindViewHolder(NewPictureViewHolder holder, final int position) {
     UnsplashPicture unsplashPicture = unsplashPictures.get(position);
     GlideUtils.showPicture(holder.picture, unsplashPicture.getUnsplashPictureLinks
-        ().getSmall(), unsplashPictures.get(position).getColor());
+        ().getRegular(), unsplashPictures.get(position).getColor());
     GlideUtils.showUserIcon(holder.userIcon, unsplashPicture.getUnsplashUser()
-        .getUserProfileImage().getMedium());
+        .getUserProfileImage().getLarge());
     holder.userName.setText(unsplashPicture.getUnsplashUser().getUserName());
     UnsplashLocation unsplashLocation = unsplashPicture.getLocation();
     if (unsplashLocation != null) {
@@ -76,11 +85,31 @@ public class NewPictureRecyclerAdapter extends UltimateViewAdapter<NewPictureRec
     holder.rootView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (itemClickListener != null) {
+        if (itemClickListener != null && mode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
           itemClickListener.onItemClick(view, position);
+        } else if (onItemDeleteListener != null && mode == Constants.MANAGE_COLLECT_MODE_DELETE) {
+          onItemDeleteListener.onItemDelete(position);
         }
       }
     });
+    holder.collect.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (onItemCollectListener != null && mode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
+          onItemCollectListener.onItemCollect(position);
+        }
+      }
+    });
+    if (mode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
+      holder.delete.setVisibility(View.GONE);
+    } else if (mode == Constants.MANAGE_COLLECT_MODE_DELETE) {
+      holder.delete.setVisibility(View.VISIBLE);
+    }
+  }
+
+  @Override
+  public int getItemCount() {
+    return unsplashPictures.size();
   }
 
   @Override
@@ -108,6 +137,8 @@ public class NewPictureRecyclerAdapter extends UltimateViewAdapter<NewPictureRec
     @BindView(R.id.iv_user_icon) ImageView userIcon;
     @BindView(R.id.tv_user_name) TextView userName;
     @BindView(R.id.tv_location) TextView location;
+    @BindView(R.id.iv_collect) ImageView collect;
+    @BindView(R.id.iv_delete) ImageView delete;
     View rootView;
 
     public NewPictureViewHolder(View itemView) {
@@ -115,6 +146,26 @@ public class NewPictureRecyclerAdapter extends UltimateViewAdapter<NewPictureRec
       ButterKnife.bind(this, itemView);
       rootView = itemView;
     }
+  }
+
+  public interface OnItemDeleteListener {
+    void onItemDelete(int position);
+  }
+
+  private OnItemDeleteListener onItemDeleteListener;
+
+  public void addOnItemDeleteListener(OnItemDeleteListener onItemDeleteListener) {
+    this.onItemDeleteListener = onItemDeleteListener;
+  }
+
+  public interface OnItemCollectListener {
+    void onItemCollect(int position);
+  }
+
+  private OnItemCollectListener onItemCollectListener;
+
+  public void addOnItemCollectListener(OnItemCollectListener onItemCollectListener) {
+    this.onItemCollectListener = onItemCollectListener;
   }
 
   public interface OnItemClickListener {

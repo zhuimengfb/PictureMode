@@ -3,7 +3,6 @@ package com.fbi.picturemode.activity.widget;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,15 +12,9 @@ import android.view.ViewGroup;
  * Date: 10/4/16
  */
 
-public class FullyLinearLayoutManager extends LinearLayoutManager {
+public class MyLinearLayoutManager extends LinearLayoutManager {
 
-  private static final String TAG = FullyLinearLayoutManager.class.getSimpleName();
-
-  public FullyLinearLayoutManager(Context context) {
-    super(context);
-  }
-
-  public FullyLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+  public MyLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
     super(context, orientation, reverseLayout);
   }
 
@@ -30,32 +23,28 @@ public class FullyLinearLayoutManager extends LinearLayoutManager {
   @Override
   public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state,
                         int widthSpec, int heightSpec) {
-
     final int widthMode = View.MeasureSpec.getMode(widthSpec);
     final int heightMode = View.MeasureSpec.getMode(heightSpec);
     final int widthSize = View.MeasureSpec.getSize(widthSpec);
     final int heightSize = View.MeasureSpec.getSize(heightSpec);
-
-    Log.i(TAG, "onMeasure called. \nwidthMode " + widthMode
-        + " \nheightMode " + heightSpec
-        + " \nwidthSize " + widthSize
-        + " \nheightSize " + heightSize
-        + " \ngetItemCount() " + getItemCount());
-
     int width = 0;
     int height = 0;
     for (int i = 0; i < getItemCount(); i++) {
-      measureScrapChild(recycler, i,
-          View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
-          View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
-          mMeasuredDimension);
-
       if (getOrientation() == HORIZONTAL) {
+        measureScrapChild(recycler, i,
+            View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+            heightSpec,
+            mMeasuredDimension);
+
         width = width + mMeasuredDimension[0];
         if (i == 0) {
           height = mMeasuredDimension[1];
         }
       } else {
+        measureScrapChild(recycler, i,
+            widthSpec,
+            View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+            mMeasuredDimension);
         height = height + mMeasuredDimension[1];
         if (i == 0) {
           width = mMeasuredDimension[0];
@@ -103,4 +92,5 @@ public class FullyLinearLayoutManager extends LinearLayoutManager {
     } finally {
     }
   }
+
 }

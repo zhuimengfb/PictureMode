@@ -32,4 +32,11 @@ public class GlideUtils {
           CropCircleTransformation(MyApp.getContext())).into(imageView);
     }
   }
+
+  public static void showUserIcon(ImageView imageView, String url,int defaultRes) {
+    if (imageView != null) {
+      Glide.with(MyApp.getContext()).load(Uri.parse(url)).error(defaultRes).bitmapTransform(new
+          CropCircleTransformation(MyApp.getContext())).into(imageView);
+    }
+  }
 }

@@ -2,6 +2,7 @@ package com.fbi.picturemode.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -11,11 +12,14 @@ import android.widget.RelativeLayout;
 
 import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.R;
-import com.fbi.picturemode.activity.PictureDetailActivity;
+import com.fbi.picturemode.activity.DetailPictureActivity;
 import com.fbi.picturemode.adapter.NewPictureRecyclerAdapter;
+import com.fbi.picturemode.commonview.MyCollectView;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.fragment.views.NewListView;
+import com.fbi.picturemode.presenter.MyCollectPresenter;
 import com.fbi.picturemode.presenter.NewListPresenter;
+import com.fbi.picturemode.utils.NetworkUtils;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import java.util.ArrayList;
@@ -31,12 +35,13 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator;
  * Date: 10/3/16
  */
 
-public class NewFragment extends BaseFragment implements NewListView {
+public class NewFragment extends BaseFragment implements NewListView, MyCollectView {
 
   @BindView(R.id.recycler_view_new) UltimateRecyclerView recyclerView;
   @BindView(R.id.loading_layout) RelativeLayout loadingMore;
   private NewPictureRecyclerAdapter adapter;
   private NewListPresenter presenter;
+  private MyCollectPresenter collectPresenter;
   private List<UnsplashPicture> unsplashPictures = new ArrayList<>();
 
   public static NewFragment newInstance() {
@@ -86,7 +91,14 @@ public class NewFragment extends BaseFragment implements NewListView {
     adapter.addOnItemClickListener(new NewPictureRecyclerAdapter.OnItemClickListener() {
       @Override
       public void onItemClick(View view, int position) {
-        PictureDetailActivity.toThisActivity(getActivity(), unsplashPictures.get(position));
+        new NetworkUtils().isNetworkAvailable(view);
+        DetailPictureActivity.toThisActivity(getActivity(), unsplashPictures.get(position));
+      }
+    });
+    adapter.addOnItemCollectListener(new NewPictureRecyclerAdapter.OnItemCollectListener() {
+      @Override
+      public void onItemCollect(int position) {
+        collectPresenter.collectPicture(unsplashPictures.get(position).getId());
       }
     });
   }
@@ -94,6 +106,7 @@ public class NewFragment extends BaseFragment implements NewListView {
   @Override
   public void initPresenter() {
     presenter = new NewListPresenter(this);
+    collectPresenter = new MyCollectPresenter(this);
   }
 
   @Override
@@ -127,5 +140,21 @@ public class NewFragment extends BaseFragment implements NewListView {
   @Override
   public void loadingComplete() {
     loadingMore.setVisibility(View.GONE);
+  }
+
+  @Override
+  public void showCollectAlready() {
+    Snackbar.make(recyclerView, getString(R.string.collect_already), Snackbar.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void showCollectSuccess() {
+    Snackbar.make(recyclerView, getString(R.string.collect_success), Snackbar.LENGTH_SHORT).show();
+
+  }
+
+  @Override
+  public void showDeleteSuccess(int position) {
+
   }
 }

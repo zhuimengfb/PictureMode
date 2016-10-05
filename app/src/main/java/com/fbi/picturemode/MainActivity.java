@@ -7,10 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.fbi.picturemode.activity.BaseActivity;
+import com.fbi.picturemode.activity.SettingActivity;
 import com.fbi.picturemode.fragment.BaseFragment;
 import com.fbi.picturemode.fragment.CollectionFragment;
 import com.fbi.picturemode.fragment.MeFragment;
@@ -20,23 +24,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
 
   @BindView(R.id.navigation_bar) BottomNavigationBar navigationBar;
   @BindView(R.id.view_pager) ViewPager viewPager;
-
   private List<BaseFragment> fragments = new ArrayList<>();
   private SectionAdapter sectionAdapter;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    ButterKnife.bind(this);
+    initToolbarMenu();
     initNavigationBar();
     initData();
     initEvent();
+  }
+
+  private void initToolbarMenu() {
+    getToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+          case R.id.action_settings:
+            SettingActivity.toThisActivity(MainActivity.this);
+            break;
+        }
+        return false;
+      }
+    });
+  }
+
+  @Override
+  public void setCustomLayout() {
+    setContentView(R.layout.activity_main);
   }
 
   private void initEvent() {
@@ -116,5 +136,11 @@ public class MainActivity extends BaseActivity {
     public int getCount() {
       return fragments.size();
     }
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+//    getMenuInflater().inflate(R.menu.menu,menu);
+    return super.onCreateOptionsMenu(menu);
   }
 }

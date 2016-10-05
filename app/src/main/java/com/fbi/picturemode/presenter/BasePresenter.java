@@ -42,4 +42,5 @@ public abstract class BasePresenter<T extends BaseView> {
     }
     this.view = null;
   }
+
 }

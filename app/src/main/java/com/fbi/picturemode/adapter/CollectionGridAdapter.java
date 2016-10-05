@@ -11,6 +11,7 @@ import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.entity.UnsplashPicture;
+import com.fbi.picturemode.utils.Constants;
 import com.fbi.picturemode.utils.DateUtils;
 import com.fbi.picturemode.utils.GlideUtils;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
@@ -31,9 +32,22 @@ public class CollectionGridAdapter extends UltimateViewAdapter<CollectionGridAda
     .CollectionViewHolder> {
 
   private List<UnsplashCollection> collectionList;
+  private int currentMode = Constants.MANAGE_COLLECT_MODE_NORMAL;
+
+  public void setCurrentMode(int mode) {
+    this.currentMode = mode;
+    if (collectionList != null && collectionList.size() > 0) {
+      this.notifyDataSetChanged();
+    }
+  }
 
   public CollectionGridAdapter(List<UnsplashCollection> collectionList) {
     this.collectionList = collectionList;
+  }
+
+  @Override
+  public int getItemCount() {
+    return collectionList.size();
   }
 
   @Override
@@ -63,14 +77,31 @@ public class CollectionGridAdapter extends UltimateViewAdapter<CollectionGridAda
   }
 
   @Override
-  public void onBindViewHolder(CollectionViewHolder holder, int position) {
+  public void onBindViewHolder(CollectionViewHolder holder, final int position) {
     UnsplashCollection collection = collectionList.get(position);
-    holder.title.setText(collection.getTitle());
+    //TODO 暂时不显示标题
+//    holder.title.setText(collection.getTitle());
     holder.publishTime.setText(DateUtils.formatDate(collection.getPublishTime()));
     UnsplashPicture cover = collection.getCover();
     if (cover != null) {
-      GlideUtils.showPicture(holder.cover, cover.getUnsplashPictureLinks().getSmall(), cover
+      GlideUtils.showPicture(holder.cover, cover.getUnsplashPictureLinks().getRegular(), cover
           .getColor());
+    }
+    holder.rootView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (itemClickListener != null && currentMode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
+          itemClickListener.onItemClick(view, position);
+        } else if (onItemDeleteListener != null && currentMode == Constants
+            .MANAGE_COLLECT_MODE_DELETE) {
+          onItemDeleteListener.onItemDelete(position);
+        }
+      }
+    });
+    if (currentMode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
+      holder.delete.setVisibility(View.GONE);
+    } else if (currentMode == Constants.MANAGE_COLLECT_MODE_DELETE) {
+      holder.delete.setVisibility(View.VISIBLE);
     }
   }
 
@@ -85,15 +116,39 @@ public class CollectionGridAdapter extends UltimateViewAdapter<CollectionGridAda
 
   }
 
+  public interface OnItemDeleteListener {
+    void onItemDelete(int position);
+  }
+
+  private OnItemDeleteListener onItemDeleteListener;
+
+  public void addOnItemDeleteListener(OnItemDeleteListener onItemDeleteListener) {
+    this.onItemDeleteListener = onItemDeleteListener;
+  }
+
   class CollectionViewHolder extends UltimateRecyclerviewViewHolder {
 
     @BindView(R.id.iv_cover) ImageView cover;
     @BindView(R.id.tv_title) TextView title;
     @BindView(R.id.tv_publish_time) TextView publishTime;
+    @BindView(R.id.iv_delete) ImageView delete;
+    View rootView;
 
     public CollectionViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
+      rootView = itemView;
     }
+  }
+
+  public interface OnItemClickListener {
+    void onItemClick(View view, int position);
+  }
+
+  private NewPictureRecyclerAdapter.OnItemClickListener itemClickListener;
+
+  public void addOnItemClickListener(NewPictureRecyclerAdapter.OnItemClickListener
+                                         itemClickListener) {
+    this.itemClickListener = itemClickListener;
   }
 }

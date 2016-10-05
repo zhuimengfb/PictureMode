@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +22,8 @@ public class UnsplashPicture implements Serializable {
 
   private int likes;
   private int downloads;
+  @JsonProperty("created_at")
+  private Date createdTime;
   @JsonProperty("like_by_user")
   private boolean likeByUser;
 
@@ -143,5 +146,13 @@ public class UnsplashPicture implements Serializable {
 
   public void setCategories(List<UnsplashCategory> categories) {
     this.categories = categories;
+  }
+
+  public Date getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(Date createdTime) {
+    this.createdTime = createdTime;
   }
 }

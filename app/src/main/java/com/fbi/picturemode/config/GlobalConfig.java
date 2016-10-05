@@ -17,6 +17,12 @@ public class GlobalConfig {
   public static final int OAUTH_TYPE_USER = 1;
   private static final String OAUTH_USER_HEADER = "Bearer ";
   private static int oauthType = OAUTH_TYPE_PUBLIC;
+  public static String currentUnsplashClientId = Constants.UNSPLASH_CLIENT_ID;
+
+
+  public static void changeClientId() {
+    currentUnsplashClientId = ConfigAuthorization.getNextClientId();
+  }
 
   public void setOauthType(int type) {
     oauthType = type;
@@ -25,7 +31,7 @@ public class GlobalConfig {
   public static String getOauthTypeHeader() {
     switch (oauthType) {
       case OAUTH_TYPE_PUBLIC:
-        return OAUTH_PUBLIC_HEADER + Constants.UNSPLASH_CLIENT_ID;
+        return OAUTH_PUBLIC_HEADER + currentUnsplashClientId;
       case OAUTH_TYPE_USER:
         return OAUTH_USER_HEADER + UserSharedPreferences.getInstance(MyApp.getContext())
             .getAccessToken();

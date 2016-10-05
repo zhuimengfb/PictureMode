@@ -2,6 +2,7 @@ package com.fbi.picturemode.presenter;
 
 import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.activity.views.LaunchView;
+import com.fbi.picturemode.config.GlobalConfig;
 import com.fbi.picturemode.entity.UnsplashLocation;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.model.UnsplashModel;
@@ -40,6 +41,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
         e.printStackTrace();
         showLastPicture();
         getView().hideLoading();
+        GlobalConfig.changeClientId();
       }
 
       @Override
@@ -68,6 +70,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
           getView().showUserIcon(userIconUrl);
           getView().showLocation(location);
           getView().showUserName(userName);
+//          getView().preload(pictureUrl);
           getView().hideLoading();
         }
       }

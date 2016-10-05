@@ -1,5 +1,5 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-    <string name="app_name">PictureMode</string>
+    <string name="app_name">PHOTO MODE</string>
     <string name="skip">SKIP</string>
     <string name="explore">NEW</string>
     <string name="collections">COLLECTIONS</string>
@@ -10,5 +10,34 @@
         , iso: <xliff:g id="iso">%s</xliff:g>
     </string>
     <string name="related_pictures">OTHER PICTURES</string>
+    <string name="related_collections">RELATED COLLECTIONS</string>
+    <string name="user_name">USER NAME</string>
+    <string name="action_settings">SETTINGS</string>
+    <string name="my_download">MY DOWNLOAD</string>
+    <string name="my_collections">MY COLLECTION</string>
+    <string name="no_content">NO CONTENT</string>
+    <string name="please_check_network">Please check your netowrk</string>
+    <string name="collect_already">Collected Already</string>
+    <string name="collect_success">Collect Success</string>
+    <string name="collect">COLLECT</string>
+    <string name="share">SHARE</string>
+    <string name="photos">PHOTOS</string>
+    <string name="delete_success">Delete Success</string>
+    <string name="manage">MANAGE</string>
+    <string name="manage_complete">COMPLETE</string>
+    <string name="download_already">Download Already</string>
+    <string name="download_success">Download Success</string>
+    <string name="download_fail">Download Fail</string>
+    <string name="download_large_pic_by_mobile">Download High Quality Photo Using Mobile Network</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="picture_path">Photo Storage Path</string>
+    <string name="picture_size">Storage Photo Size</string>
+    <string name="app_version">App Version</string>
+    <string name="about_app">About app</string>
+    <string name="clear_cache_success">Clear Cache Success</string>
+    <string name="about_first">Thank Unsplash for the high quality photos</string>
+    <string name="about_second">Photo Mode is a photo gallery app for users to browse high quality photos provided by Unsplash and all the photos can be downloaded</string>
+    <string name="about_third">Photo Mode is developed by FBi when he is bored during the vacation. Because FBi likes browsing high quality photos provided by Unsplash, but there is not an official app, as a result, FBi programs this simple app</string>
+    <string name="about_fourth">Due to the short vacation, the first version of this app is somewhat simple, em, FBi will try his best effort to improve and perfect this app in the future work</string>
 
 </resources>

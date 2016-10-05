@@ -10,10 +10,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.fbi.picturemode.R;
+import com.fbi.picturemode.activity.DetailCollectionActivity;
 import com.fbi.picturemode.adapter.CollectionGridAdapter;
+import com.fbi.picturemode.adapter.NewPictureRecyclerAdapter;
 import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.fragment.views.CollectionsView;
 import com.fbi.picturemode.presenter.CollectionPresenter;
+import com.fbi.picturemode.utils.NetworkUtils;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import java.util.ArrayList;
@@ -80,6 +83,13 @@ public class CollectionFragment extends BaseFragment implements CollectionsView 
         collectionPresenter.getNextPageCollections();
       }
     });
+    adapter.addOnItemClickListener(new NewPictureRecyclerAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(View view, int position) {
+        new NetworkUtils().isNetworkAvailable(view);
+        DetailCollectionActivity.toThisActivity(getActivity(), collections.get(position));
+      }
+    });
   }
 
   @Override
@@ -119,4 +129,5 @@ public class CollectionFragment extends BaseFragment implements CollectionsView 
   public void loadComplete() {
     loadingMore.setVisibility(View.GONE);
   }
+
 }

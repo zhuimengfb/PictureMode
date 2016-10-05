@@ -35,4 +35,14 @@ public interface UnsplashApiService {
   @GET("/users/{userName}/photos")
   Observable<List<UnsplashPicture>> getUserPictures(@Path("userName") String userName, @Query
       ("page") int page, @Query("per_page") int pageNum);
+
+  @GET("/collections/{id}/photos")
+  Observable<List<UnsplashPicture>> getCollectionPictures(@Path("id") int collectionId, @Query
+      ("page") int page, @Query("per_page") int pageNum);
+
+  @GET("/collections/{id}")
+  Observable<UnsplashCollection> getDetailCollection(@Path("id") int collectionId);
+
+  @GET("/collections/{id}/related")
+  Observable<List<UnsplashCollection>> getRelatedCollections(@Path("id") int collectionId);
 }

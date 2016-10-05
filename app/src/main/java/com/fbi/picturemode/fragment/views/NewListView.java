@@ -24,4 +24,5 @@ public interface NewListView extends BaseView {
   void startLoadingMore();
 
   void loadingComplete();
+
 }

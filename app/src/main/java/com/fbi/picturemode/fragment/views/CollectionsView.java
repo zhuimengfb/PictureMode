@@ -24,4 +24,5 @@ public interface CollectionsView extends BaseView {
   void showLoadMore();
 
   void loadComplete();
+
 }

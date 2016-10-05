@@ -10,13 +10,14 @@
     <application
         android:name=".MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/app_launch_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LaunchActivity"
             android:theme="@style/NoTitleFullscreen"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -24,8 +25,27 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".activity.PictureDetailActivity"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".activity.DetailPictureActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.DetailCollectionActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SettingActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MyDownloadActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MyCollectionActivity"
+                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.FullPictureActivity"
+            android:theme="@style/NoTitleFullscreen"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+        <activity android:name=".activity.AboutActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

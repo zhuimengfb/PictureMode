@@ -45,7 +45,7 @@ public class NewListPresenter extends BasePresenter<NewListView> {
     getPagePictures(currentPage);
   }
 
-  private void getPagePictures(int page) {
+  private void getPagePictures(final int page) {
     getSubscriptions().add(model.getPagePictures(page, pageNum, new
         Subscriber<List<UnsplashPicture>>() {
           @Override
@@ -56,6 +56,31 @@ public class NewListPresenter extends BasePresenter<NewListView> {
           @Override
           public void onError(Throwable e) {
             e.printStackTrace();
+            getView().stopRefreshing();
+            getView().loadingComplete();
+            getSubscriptions().add(model.getPagePictureFromDB(page, pageNum, new
+                Subscriber<List<UnsplashPicture>>() {
+                  @Override
+                  public void onCompleted() {
+
+                  }
+
+                  @Override
+                  public void onError(Throwable e) {
+
+                  }
+
+                  @Override
+                  public void onNext(List<UnsplashPicture> unsplashPictures) {
+                    if (currentPage == 1) {
+                      getView().updateFirstPageList(unsplashPictures);
+                      getView().stopRefreshing();
+                    } else {
+                      getView().updatePictureList(unsplashPictures);
+                      getView().loadingComplete();
+                    }
+                  }
+                }));
           }
 
           @Override

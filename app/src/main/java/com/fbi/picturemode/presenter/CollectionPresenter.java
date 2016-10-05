@@ -44,7 +44,7 @@ public class CollectionPresenter extends BasePresenter<CollectionsView> {
     getPageCollections(currentPage);
   }
 
-  private void getPageCollections(int page) {
+  private void getPageCollections(final int page) {
     getSubscriptions().add(model.getPageCollections(page, pageNum, new
         Subscriber<List<UnsplashCollection>>() {
 
@@ -56,6 +56,32 @@ public class CollectionPresenter extends BasePresenter<CollectionsView> {
           @Override
           public void onError(Throwable e) {
             e.printStackTrace();
+            getView().hideRefreshing();
+            getView().loadComplete();
+            getSubscriptions().add(model.getPageCollectionsFromDB(page, pageNum, new Subscriber<List<UnsplashCollection>>() {
+
+
+              @Override
+              public void onCompleted() {
+
+              }
+
+              @Override
+              public void onError(Throwable e) {
+
+              }
+
+              @Override
+              public void onNext(List<UnsplashCollection> collections) {
+                if (currentPage == 1) {
+                  getView().updateFirstPageCollections(collections);
+                  getView().hideRefreshing();
+                } else {
+                  getView().updateNextPageCollections(collections);
+                  getView().loadComplete();
+                }
+              }
+            }));
           }
 
           @Override
@@ -71,4 +97,5 @@ public class CollectionPresenter extends BasePresenter<CollectionsView> {
           }
         }));
   }
+
 }

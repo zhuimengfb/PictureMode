@@ -19,4 +19,6 @@ public interface LaunchView extends BaseView {
   void showUserName(String userName);
 
   void hideLoading();
+
+  void preload(String pictureUrl);
 }
