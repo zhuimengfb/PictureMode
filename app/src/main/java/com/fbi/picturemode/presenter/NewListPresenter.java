@@ -20,7 +20,7 @@ import static android.content.ContentValues.TAG;
 
 public class NewListPresenter extends BasePresenter<NewListView> {
   private int currentPage = 1;
-  private int pageNum = 10;
+  private int pageNum = 20;
   private UnsplashModel model;
 
   public NewListPresenter(NewListView baseView) {
@@ -30,6 +30,11 @@ public class NewListPresenter extends BasePresenter<NewListView> {
   @Override
   protected void initModel() {
     model = new UnsplashModel();
+  }
+
+  @Override
+  protected void destroyModel() {
+    model = null;
   }
 
 
@@ -97,9 +102,4 @@ public class NewListPresenter extends BasePresenter<NewListView> {
         }));
   }
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    model = null;
-  }
 }

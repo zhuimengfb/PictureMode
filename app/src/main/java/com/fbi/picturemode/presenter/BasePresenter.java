@@ -33,6 +33,7 @@ public abstract class BasePresenter<T extends BaseView> {
 
   protected abstract void initModel();
 
+  protected abstract void destroyModel();
 
   public void onDestroy() {
     for (Subscription subscription : subscriptions) {
@@ -41,6 +42,7 @@ public abstract class BasePresenter<T extends BaseView> {
       }
     }
     this.view = null;
+    destroyModel();
   }
 
 }

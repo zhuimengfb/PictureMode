@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/iv_user_item_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="16dp"
         />
     <RelativeLayout
         android:layout_width="wrap_content"

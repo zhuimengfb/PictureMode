@@ -1,6 +1,6 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-    <string name="app_name">时尚壁纸</string>
-    <string name="skip">跳过</string>
+    <string name="app_name">尚图</string>
+    <string name="skip">进入主页</string>
     <string name="explore">最新</string>
     <string name="collections">合集</string>
     <string name="me">我的</string>
@@ -39,5 +39,6 @@
     <string name="about_second">Photo Mode是一款使用Unsplash开源高质量图片的时尚图片浏览应用,应用中的高质量图片均可下载</string>
     <string name="about_third">Photo Mode是由FBi在无聊的时候突发奇想开发出来的,由于FBi是壁纸控,奈何Unsplash没有Android版本,所以自己动手写了一个简单的版本</string>
     <string name="about_fourth">然而假期时间较短,所以第一版略微简陋,嗯,争取在后续版本中进行改进</string>
+    <string name="about_fifth_content">友情提示:所有图片都是高清大图,所以请耐心等待并且建议在WIFI下使用</string>
 
 </resources>

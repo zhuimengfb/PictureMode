@@ -51,8 +51,7 @@ public class MyCollectPresenter extends BasePresenter<MyCollectView> {
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
+  protected void destroyModel() {
     model = null;
   }
 
@@ -81,7 +80,7 @@ public class MyCollectPresenter extends BasePresenter<MyCollectView> {
         }));
   }
 
-  public void deleteCollect(String collectId,final int position) {
+  public void deleteCollect(String collectId, final int position) {
     getSubscriptions().add(model.deleteMyCollect(collectId, new Subscriber<String>() {
       @Override
       public void onCompleted() {

@@ -39,5 +39,6 @@
     <string name="about_second">Photo Mode is a photo gallery app for users to browse high quality photos provided by Unsplash and all the photos can be downloaded</string>
     <string name="about_third">Photo Mode is developed by FBi when he is bored during the vacation. Because FBi likes browsing high quality photos provided by Unsplash, but there is not an official app, as a result, FBi programs this simple app</string>
     <string name="about_fourth">Due to the short vacation, the first version of this app is somewhat simple, em, FBi will try his best effort to improve and perfect this app in the future work</string>
+    <string name="about_fifth_content">Tips: all photos are in high quality, so be patient and using WIFI</string>
 
 </resources>

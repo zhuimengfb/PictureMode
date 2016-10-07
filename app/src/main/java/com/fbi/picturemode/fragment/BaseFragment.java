@@ -19,4 +19,12 @@ public abstract class BaseFragment extends Fragment{
   }
 
   public abstract void initPresenter();
+
+  public abstract void destroyPresenter();
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    destroyPresenter();
+  }
 }

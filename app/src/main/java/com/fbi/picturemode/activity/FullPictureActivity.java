@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,7 +29,9 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 /**
  * Author: FBi.
@@ -37,7 +41,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class FullPictureActivity extends BaseActivity implements FullPictureView {
 
-  @BindView(R.id.iv_full_picture) ImageView fullImage;
+  @BindView(R.id.iv_full_picture) ImageViewTouch fullImage;
   @BindView(R.id.iv_back) ImageView backImage;
   @BindView(R.id.loading_layout) RelativeLayout loadingLayout;
   @BindView(R.id.iv_download) ImageView download;
@@ -46,23 +50,34 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
   @BindView(R.id.operation_layout) RelativeLayout operationLayout;
   private UnsplashPicture picture;
   private MyDownload myDownload;
-  PhotoViewAttacher mAttacher;
   private static final int MODE_NET = 0;
   private static final int MODE_LOCAL = 1;
 
   private FullPicturePresenter presenter;
+  private static float highResolutionThreshold = 5760.0f;
+  private float currentWith = 0;
+  private long compressThreshold = 3 * 1024 * 1024;
+  private boolean loadComplete = false;
+  private long waitingPeriod = 4000;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    DisplayMetrics dm = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(dm);
+    float width = dm.widthPixels * dm.density;
+    float height = dm.heightPixels * dm.density;
+    currentWith = width;
+    Log.d("screen", "onCreate: " + dm.density + width + "," + height);
     int mode = getIntent().getIntExtra("mode", MODE_NET);
-    if (mode == 0) {
+    if (mode == MODE_NET) {
       picture = (UnsplashPicture) getIntent().getSerializableExtra("picture");
       initData();
-    } else if (mode == 1) {
+    } else if (mode == MODE_LOCAL) {
       myDownload = (MyDownload) getIntent().getSerializableExtra("download");
       if (!new File(myDownload.getLocalAddress()).exists()) {
-        MyDownloadDataHelper.getInstance(MyApp.getContext()).deleteMyDownload(myDownload.getPhotoId());
+        MyDownloadDataHelper.getInstance(MyApp.getContext()).deleteMyDownload(myDownload
+            .getPhotoId());
         picture = UnsplashPictureDataHelper.getInstance(MyApp.getContext()).queryPictureById
             (myDownload.getPhotoId());
         initData();
@@ -76,10 +91,32 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
 
   private void initLocalData() {
     showLoading();
-    mAttacher = new PhotoViewAttacher(fullImage);
-    Glide.with(this).load(myDownload.getLocalAddress()).into(fullImage);
-    mAttacher.update();
-    stopLoading();
+    File file = new File(myDownload.getLocalAddress());
+    if (file.length() > compressThreshold) {
+      Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
+
+        @Override
+        public void onStart() {
+          showLoading();
+        }
+
+        @Override
+        public void onSuccess(File file) {
+          Glide.with(MyApp.getContext()).load(file).into(fullImage);
+          stopLoading();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+      }).launch();
+    } else {
+      Glide.with(MyApp.getContext()).load(file).into(fullImage);
+      stopLoading();
+    }
+
+
   }
 
   @OnClick(R.id.iv_back)
@@ -105,7 +142,52 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
 
   private void initData() {
     showLoading();
-    mAttacher = new PhotoViewAttacher(fullImage);
+    String url = "";
+    if (currentWith >= highResolutionThreshold) {
+      loadingFullPicture();
+    } else {
+      loadingRegularPicture();
+    }
+  }
+
+  private void loadingFullPicture() {
+    showLoading();
+    Glide.with(this).load(Uri.parse(picture.getUnsplashPictureLinks().getRegular())).listener(new RequestListener<Uri, GlideDrawable>() {
+
+      @Override
+      public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean
+          isFirstResource) {
+        return false;
+      }
+
+      @Override
+      public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable>
+          target, boolean isFromMemoryCache, boolean isFirstResource) {
+        Glide.with(MyApp.getContext()).load(picture.getUnsplashPictureLinks().getFull()).listener
+            (new RequestListener<String, GlideDrawable>() {
+
+          @Override
+          public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                     boolean isFirstResource) {
+            return false;
+          }
+
+          @Override
+          public boolean onResourceReady(GlideDrawable resource, String model,
+                                         Target<GlideDrawable> target, boolean isFromMemoryCache,
+                                         boolean isFirstResource) {
+            stopLoading();
+            return false;
+          }
+        }).into
+            (fullImage);
+        return false;
+      }
+    }).into(fullImage);
+  }
+
+  private void loadingRegularPicture() {
+    showLoading();
     Glide.with(this).load(Uri.parse(picture.getUnsplashPictureLinks().getRegular())).listener(new RequestListener<Uri, GlideDrawable>() {
 
       @Override
@@ -118,7 +200,6 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
       public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable>
           target, boolean isFromMemoryCache, boolean isFirstResource) {
         stopLoading();
-        mAttacher.update();
         return false;
       }
     }).into(fullImage);
@@ -132,6 +213,11 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
   @Override
   public void initPresenter() {
     presenter = new FullPicturePresenter(this);
+  }
+
+  @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
   }
 
   public static void toThisActivityFromNet(Context context, UnsplashPicture picture) {

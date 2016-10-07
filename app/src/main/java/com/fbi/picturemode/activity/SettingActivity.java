@@ -236,6 +236,11 @@ public class SettingActivity extends BaseActivity {
 
   }
 
+  @Override
+  public void destroyPresenter() {
+
+  }
+
 
   public static void toThisActivity(Context context) {
     Intent intent = new Intent();

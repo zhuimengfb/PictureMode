@@ -179,6 +179,12 @@ public class DetailPictureActivity extends BaseActivity implements DetailPicture
     collectPresenter = new MyCollectPresenter(this);
   }
 
+  @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
+    collectPresenter.onDestroy();
+  }
+
 
   public static void toThisActivity(Context context, UnsplashPicture picture) {
     Intent intent = new Intent();

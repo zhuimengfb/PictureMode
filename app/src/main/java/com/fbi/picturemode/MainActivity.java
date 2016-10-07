@@ -114,6 +114,11 @@ public class MainActivity extends BaseActivity {
 
   }
 
+  @Override
+  public void destroyPresenter() {
+
+  }
+
   public static void toMainActivityAndKillSelf(Context context) {
     Intent intent = new Intent();
     intent.setClass(context, MainActivity.class);

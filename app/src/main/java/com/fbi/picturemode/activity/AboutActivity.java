@@ -47,6 +47,7 @@ public class AboutActivity extends BaseActivity {
     contents.add(getString(R.string.about_second));
     contents.add(getString(R.string.about_third));
     contents.add(getString(R.string.about_fourth));
+    contents.add(getString(R.string.about_fifth_content));
     aboutItemAdapter = new AboutItemAdapter(contents);
     recyclerView.setAdapter(aboutItemAdapter);
   }
@@ -58,6 +59,11 @@ public class AboutActivity extends BaseActivity {
 
   @Override
   public void initPresenter() {
+
+  }
+
+  @Override
+  public void destroyPresenter() {
 
   }
 

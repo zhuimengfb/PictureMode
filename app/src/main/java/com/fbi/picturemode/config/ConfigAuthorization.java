@@ -1,5 +1,8 @@
 package com.fbi.picturemode.config;
 
+import com.fbi.picturemode.MyApp;
+import com.fbi.picturemode.utils.sharedpreference.UnsplashSharedPreferences;
+
 /**
  * Author: FBi.
  * Email: bofu1993@163.com.
@@ -16,7 +19,8 @@ public class ConfigAuthorization {
       "aa5390d38f9c2ebed5fcc6f895496688202c1dcb15ac92b495c5647243355995"
   };
 
-  public static int currentClientIdIndex = 0;
+  public static int currentClientIdIndex = UnsplashSharedPreferences.getInstance(MyApp.getContext
+      ()).getClientIdIndex();
 
   public static String getNextClientId() {
     if (currentClientIdIndex == clientIds.length - 1) {
@@ -24,6 +28,8 @@ public class ConfigAuthorization {
     } else {
       currentClientIdIndex++;
     }
+    UnsplashSharedPreferences.getInstance(MyApp.getContext()).updateClientIdIndex
+        (currentClientIdIndex);
     return clientIds[currentClientIdIndex];
   }
 

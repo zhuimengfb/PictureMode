@@ -89,6 +89,11 @@ public class MyDownloadActivity extends BaseActivity implements MyDownloadView {
   }
 
   @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_manage:

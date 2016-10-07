@@ -68,6 +68,12 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
     collectPresenter = new MyCollectPresenter(this);
   }
 
+  @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
+    collectPresenter.onDestroy();
+  }
+
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {

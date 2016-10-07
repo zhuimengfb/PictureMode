@@ -96,6 +96,12 @@ public class MyCollectPictureFragment extends BaseFragment implements MyCollectV
   }
 
   @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
+    queryPresenter.onDestroy();
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     return super.onOptionsItemSelected(item);
   }

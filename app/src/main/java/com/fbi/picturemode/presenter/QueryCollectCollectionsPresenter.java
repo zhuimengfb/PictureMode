@@ -17,8 +17,8 @@ import rx.Subscriber;
 public class QueryCollectCollectionsPresenter extends BasePresenter<QueryCollectCollectionView> {
 
 
-
   private UnsplashModel model;
+
   public QueryCollectCollectionsPresenter(QueryCollectCollectionView baseView) {
     super(baseView);
   }
@@ -26,6 +26,11 @@ public class QueryCollectCollectionsPresenter extends BasePresenter<QueryCollect
   @Override
   protected void initModel() {
     model = new UnsplashModel();
+  }
+
+  @Override
+  protected void destroyModel() {
+    model = null;
   }
 
   public void queryCollectCollections() {

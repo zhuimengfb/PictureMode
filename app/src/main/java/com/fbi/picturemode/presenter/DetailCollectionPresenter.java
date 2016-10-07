@@ -34,10 +34,10 @@ public class DetailCollectionPresenter extends BasePresenter<DetailCollectionVie
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
+  protected void destroyModel() {
     model = null;
   }
+
 
   public void updateCollectionInfo(int id) {
     getSubscriptions().add(model.getDetailCollection(id, new Subscriber<UnsplashCollection>() {
@@ -80,7 +80,9 @@ public class DetailCollectionPresenter extends BasePresenter<DetailCollectionVie
           @Override
           public void onError(Throwable e) {
             e.printStackTrace();
-            getView().loadingComplete();
+            if (getView() != null) {
+              getView().loadingComplete();
+            }
           }
 
           @Override
@@ -100,24 +102,24 @@ public class DetailCollectionPresenter extends BasePresenter<DetailCollectionVie
     getSubscriptions().add(model.getRelatedCollections(collectionId, new
         Subscriber<List<UnsplashCollection>>() {
 
-      @Override
-      public void onCompleted() {
+          @Override
+          public void onCompleted() {
 
-      }
+          }
 
-      @Override
-      public void onError(Throwable e) {
-        e.printStackTrace();
-      }
+          @Override
+          public void onError(Throwable e) {
+            e.printStackTrace();
+          }
 
-      @Override
-      public void onNext(List<UnsplashCollection> collections) {
-        if (collections.size() > 0) {
-          getView().updateRelatedCollections(collections);
-        } else {
-          getView().showNoRelatedCollections();
-        }
-      }
-    }));
+          @Override
+          public void onNext(List<UnsplashCollection> collections) {
+            if (collections.size() > 0) {
+              getView().updateRelatedCollections(collections);
+            } else {
+              getView().showNoRelatedCollections();
+            }
+          }
+        }));
   }
 }

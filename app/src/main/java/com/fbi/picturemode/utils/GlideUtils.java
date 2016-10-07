@@ -2,12 +2,18 @@ package com.fbi.picturemode.utils;
 
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.fbi.picturemode.MyApp;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Author: FBi.
@@ -22,7 +28,21 @@ public class GlideUtils {
       pictureBackgroundColor) {
     if (imageView != null) {
       imageView.setBackgroundColor(Color.parseColor(pictureBackgroundColor));
-      Glide.with(MyApp.getContext()).load(Uri.parse(pictureUrl)).into(imageView);
+      Glide.with(MyApp.getContext()).load(Uri.parse(pictureUrl)).listener(new RequestListener<Uri, GlideDrawable>() {
+
+        @Override
+        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean
+            isFirstResource) {
+          return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable>
+            target, boolean isFromMemoryCache, boolean isFirstResource) {
+          Log.d(TAG, "onResourceReady: "+isFirstResource+" "+isFromMemoryCache);
+          return false;
+        }
+      }).into(imageView);
     }
   }
 

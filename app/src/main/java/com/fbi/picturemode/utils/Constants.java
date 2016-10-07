@@ -13,6 +13,7 @@ public class Constants {
   public static final String UNSPLASH_SERVER_URL = "https://api.unsplash.com";
   public static final String UNSPLASH_CLIENT_ID =
       "c993023fb6928fc21d1986926f8ae03695fb7bd39766cdea129cf545d585250e";
+  public static final String BUGLY_APP_ID = "c61c4d9906";
 
   public static final int MANAGE_COLLECT_MODE_NORMAL = 0;
   public static final int MANAGE_COLLECT_MODE_DELETE = 1;

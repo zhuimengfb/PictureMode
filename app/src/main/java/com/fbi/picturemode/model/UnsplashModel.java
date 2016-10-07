@@ -68,6 +68,7 @@ public class UnsplashModel extends BaseModel {
   public Subscription getPageCollections(int page, int pageNum,
                                          Subscriber<List<UnsplashCollection>> subscriber) {
     return UnsplashApiManager.getPageCollections(page, pageNum)
+        .map(filer)
         .doOnNext(new Action1<List<UnsplashCollection>>() {
           @Override
           public void call(List<UnsplashCollection> collections) {
@@ -150,10 +151,26 @@ public class UnsplashModel extends BaseModel {
         .subscribe(subscriber);
   }
 
+  private Func1<List<UnsplashCollection>, List<UnsplashCollection>> filer = new
+      Func1<List<UnsplashCollection>, List<UnsplashCollection>>() {
+    @Override
+    public List<UnsplashCollection> call(List<UnsplashCollection> collections) {
+      List<UnsplashCollection> collectionList = new ArrayList<UnsplashCollection>();
+      for (UnsplashCollection collection : collections) {
+        if (collection != null && collection.getCover() != null) {
+          collectionList.add(collection);
+        }
+      }
+      return collectionList;
+    }
+  };
+
+
   public Subscription getRelatedCollections(final int collectionId,
                                             Subscriber<List<UnsplashCollection>>
                                                 subscriber) {
     return UnsplashApiManager.getRelatedCollections(collectionId)
+        .map(filer)
         .doOnNext(new Action1<List<UnsplashCollection>>() {
           @Override
           public void call(List<UnsplashCollection> collections) {

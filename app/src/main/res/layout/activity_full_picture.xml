@@ -39,11 +39,10 @@
             android:src="@drawable/like_white"
             />
     </RelativeLayout>
-    <ImageView
+    <it.sephiroth.android.library.imagezoom.ImageViewTouch
         android:id="@+id/iv_full_picture"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
         android:layout_above="@id/operation_layout"
         android:layout_centerInParent="true"
         />

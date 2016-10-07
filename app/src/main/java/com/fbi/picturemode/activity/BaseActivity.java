@@ -65,4 +65,11 @@ public abstract class BaseActivity extends AppCompatActivity {
   public abstract void setCustomLayout();
 
   public abstract void initPresenter();
+
+  public abstract void destroyPresenter();
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    destroyPresenter();
+  }
 }

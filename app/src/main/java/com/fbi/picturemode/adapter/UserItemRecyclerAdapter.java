@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.entity.UserItem;
+import com.fbi.picturemode.utils.UriUtils;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 
@@ -70,8 +72,11 @@ public class UserItemRecyclerAdapter extends UltimateViewAdapter<UserItemRecycle
   }
 
   @Override
-  public void onBindViewHolder(UserItemViewHolder holder, final int position) {
-    holder.userItemIcon.setImageResource(userItems.get(position).getIconRes());
+  public void onBindViewHolder(UserItemViewHolder holder, int position) {
+    final int temPosition = position;
+    Glide.with(MyApp.getContext()).load(UriUtils.getDrawableUri(userItems.get(position)
+        .getIconRes())).into(holder.userItemIcon);
+//    holder.userItemIcon.setImageResource(userItems.get(position).getIconRes());
     holder.userItemTitle.setText(userItems.get(position).getTitle());
     if (!TextUtils.isEmpty(userItems.get(position).getSubTitle())) {
       holder.userItemSubtitle.setVisibility(View.VISIBLE);
@@ -80,7 +85,7 @@ public class UserItemRecyclerAdapter extends UltimateViewAdapter<UserItemRecycle
     holder.getView().setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Intent intent = new Intent(context, userItems.get(position).getClazz());
+        Intent intent = new Intent(context, userItems.get(temPosition).getClazz());
         context.startActivity(intent);
       }
     });

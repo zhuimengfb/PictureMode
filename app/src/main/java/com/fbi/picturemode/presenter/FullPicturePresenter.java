@@ -27,6 +27,11 @@ public class FullPicturePresenter extends BasePresenter<FullPictureView> {
     model = new UnsplashModel();
   }
 
+  @Override
+  protected void destroyModel() {
+    model=null;
+  }
+
   public void collectPicture(String id) {
     getSubscriptions().add(model.collect(id, MyCollectContract.TYPE_PICTURE, new
         Subscriber<Integer>() {
@@ -84,4 +89,5 @@ public class FullPicturePresenter extends BasePresenter<FullPictureView> {
       }
     }));
   }
+
 }

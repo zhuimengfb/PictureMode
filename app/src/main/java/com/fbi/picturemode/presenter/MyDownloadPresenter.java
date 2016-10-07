@@ -27,6 +27,11 @@ public class MyDownloadPresenter extends BasePresenter<MyDownloadView> {
     model = new UnsplashModel();
   }
 
+  @Override
+  protected void destroyModel() {
+    model = null;
+  }
+
   public void getDownloadList() {
     getSubscriptions().add(model.queryDownloadList(new Subscriber<List<MyDownload>>() {
       @Override
@@ -68,11 +73,5 @@ public class MyDownloadPresenter extends BasePresenter<MyDownloadView> {
         getView().showDeleteSuccess(position);
       }
     }));
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    model = null;
   }
 }

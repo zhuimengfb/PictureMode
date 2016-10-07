@@ -26,6 +26,11 @@ public class QueryCollectPicturePresenter extends BasePresenter<QueryCollectPict
     model = new UnsplashModel();
   }
 
+  @Override
+  protected void destroyModel() {
+    model = null;
+  }
+
   public void queryCollectPictures() {
     getSubscriptions().add(model.queryCollectPictures(new Subscriber<List<UnsplashPicture>>() {
       @Override

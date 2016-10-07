@@ -98,6 +98,11 @@ public class CollectionFragment extends BaseFragment implements CollectionsView 
   }
 
   @Override
+  public void destroyPresenter() {
+    collectionPresenter.onDestroy();
+  }
+
+  @Override
   public void updateFirstPageCollections(List<UnsplashCollection> collections) {
     this.collections.clear();
     this.collections.addAll(collections);

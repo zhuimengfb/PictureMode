@@ -21,7 +21,7 @@ import static android.content.ContentValues.TAG;
 public class PictureDetailPresenter extends BasePresenter<DetailPictureView> {
   private UnsplashModel model;
   private int currentPage = 1;
-  private int pageNum = 10;
+  private int pageNum = 20;
 
   public PictureDetailPresenter(DetailPictureView baseView) {
     super(baseView);
@@ -30,6 +30,11 @@ public class PictureDetailPresenter extends BasePresenter<DetailPictureView> {
   @Override
   protected void initModel() {
     model = new UnsplashModel();
+  }
+
+  @Override
+  protected void destroyModel() {
+    model = null;
   }
 
   public void getDetailPicture(String id) {
@@ -74,30 +79,32 @@ public class PictureDetailPresenter extends BasePresenter<DetailPictureView> {
           @Override
           public void onError(Throwable e) {
             e.printStackTrace();
-            getView().loadingComplete();
-            getSubscriptions().add(model.getUserPagePictures(userName, page, pageNum, new
-                Subscriber<List<UnsplashPicture>>() {
+            if (getView() != null) {
+              getView().loadingComplete();
+              getSubscriptions().add(model.getUserPagePictures(userName, page, pageNum, new
+                  Subscriber<List<UnsplashPicture>>() {
 
-              @Override
-              public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-              }
+                    }
 
-              @Override
-              public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-              }
+                    }
 
-              @Override
-              public void onNext(List<UnsplashPicture> unsplashPictures) {
-                if (currentPage == 1) {
-                  getView().updateFirstPageList(unsplashPictures);
-                } else {
-                  getView().updatePictureList(unsplashPictures);
-                  getView().loadingComplete();
-                }
-              }
-            }));
+                    @Override
+                    public void onNext(List<UnsplashPicture> unsplashPictures) {
+                      if (currentPage == 1) {
+                        getView().updateFirstPageList(unsplashPictures);
+                      } else {
+                        getView().updatePictureList(unsplashPictures);
+                        getView().loadingComplete();
+                      }
+                    }
+                  }));
+            }
           }
 
           @Override
@@ -113,9 +120,4 @@ public class PictureDetailPresenter extends BasePresenter<DetailPictureView> {
         }));
   }
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    model = null;
-  }
 }

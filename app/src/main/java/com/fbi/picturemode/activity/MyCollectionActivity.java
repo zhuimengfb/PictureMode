@@ -63,6 +63,11 @@ public class MyCollectionActivity extends BaseActivity {
   }
 
   @Override
+  public void destroyPresenter() {
+
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_manage:

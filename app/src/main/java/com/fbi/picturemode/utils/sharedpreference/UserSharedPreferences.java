@@ -17,6 +17,9 @@ public class UserSharedPreferences {
   private static final String KEY_USER_PHOTO_BASE_PATH = "user_photo_base_path";
   private static final String KEY_DOWNLOAD_HIGH_QUALITY_PIC_USING_MOBILE_NETOWRK =
       "download_high_quality_using_mobile";
+  private static final String KEY_FIIRST_LAUNCH = "FIRST_LAUNCH";
+  private static final String KEY_USER_ICON_URL = "USER_ICON_URL";
+
   private static UserSharedPreferences userSharedPreferences;
   private static SharedPreferences sharedPreferences;
 
@@ -54,5 +57,18 @@ public class UserSharedPreferences {
   public void updateDownloadHighQualityPictureUsingMobileNetwork(boolean use) {
     sharedPreferences.edit().putBoolean(KEY_DOWNLOAD_HIGH_QUALITY_PIC_USING_MOBILE_NETOWRK, use)
         .apply();
+  }
+  public boolean isFirstLaunch() {
+    return sharedPreferences.getBoolean(KEY_FIIRST_LAUNCH, true);
+  }
+  public void setFirstLauncFalse() {
+    sharedPreferences.edit().putBoolean(KEY_FIIRST_LAUNCH, false).apply();
+  }
+
+  public void updateUserIconUrl(String url) {
+    sharedPreferences.edit().putString(KEY_USER_ICON_URL, url).apply();
+  }
+  public String getUserIconUrl() {
+    return sharedPreferences.getString(KEY_USER_ICON_URL, "");
   }
 }

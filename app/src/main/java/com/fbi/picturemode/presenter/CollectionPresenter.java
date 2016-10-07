@@ -21,7 +21,7 @@ import static android.content.ContentValues.TAG;
 public class CollectionPresenter extends BasePresenter<CollectionsView> {
   private UnsplashModel model;
   private int currentPage = 1;
-  private int pageNum = 8;
+  private int pageNum = 20;
 
   public CollectionPresenter(CollectionsView baseView) {
     super(baseView);
@@ -30,6 +30,11 @@ public class CollectionPresenter extends BasePresenter<CollectionsView> {
   @Override
   protected void initModel() {
     model = new UnsplashModel();
+  }
+
+  @Override
+  protected void destroyModel() {
+    model = null;
   }
 
   public void getFirstPageCollections() {
@@ -58,30 +63,31 @@ public class CollectionPresenter extends BasePresenter<CollectionsView> {
             e.printStackTrace();
             getView().hideRefreshing();
             getView().loadComplete();
-            getSubscriptions().add(model.getPageCollectionsFromDB(page, pageNum, new Subscriber<List<UnsplashCollection>>() {
+            getSubscriptions().add(model.getPageCollectionsFromDB(page, pageNum, new
+                Subscriber<List<UnsplashCollection>>() {
 
 
-              @Override
-              public void onCompleted() {
+                  @Override
+                  public void onCompleted() {
 
-              }
+                  }
 
-              @Override
-              public void onError(Throwable e) {
+                  @Override
+                  public void onError(Throwable e) {
 
-              }
+                  }
 
-              @Override
-              public void onNext(List<UnsplashCollection> collections) {
-                if (currentPage == 1) {
-                  getView().updateFirstPageCollections(collections);
-                  getView().hideRefreshing();
-                } else {
-                  getView().updateNextPageCollections(collections);
-                  getView().loadComplete();
-                }
-              }
-            }));
+                  @Override
+                  public void onNext(List<UnsplashCollection> collections) {
+                    if (currentPage == 1) {
+                      getView().updateFirstPageCollections(collections);
+                      getView().hideRefreshing();
+                    } else {
+                      getView().updateNextPageCollections(collections);
+                      getView().loadComplete();
+                    }
+                  }
+                }));
           }
 
           @Override

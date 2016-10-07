@@ -97,6 +97,12 @@ public class MyCollectCollectionFragment extends BaseFragment implements MyColle
   }
 
   @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
+    queryPresenter.onDestroy();
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     return super.onOptionsItemSelected(item);
   }

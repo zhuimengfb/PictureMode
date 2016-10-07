@@ -110,6 +110,12 @@ public class NewFragment extends BaseFragment implements NewListView, MyCollectV
   }
 
   @Override
+  public void destroyPresenter() {
+    presenter.onDestroy();
+    collectPresenter.onDestroy();
+  }
+
+  @Override
   public void updatePictureList(List<UnsplashPicture> unsplashPictures) {
     this.unsplashPictures.addAll(unsplashPictures);
     adapter.notifyDataSetChanged();
