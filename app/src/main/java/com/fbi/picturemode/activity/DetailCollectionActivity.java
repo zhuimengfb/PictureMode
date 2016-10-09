@@ -28,11 +28,13 @@ import com.fbi.picturemode.presenter.DetailCollectionPresenter;
 import com.fbi.picturemode.presenter.MyCollectPresenter;
 import com.fbi.picturemode.utils.GlideUtils;
 import com.fbi.picturemode.utils.NetworkUtils;
+import com.fbi.picturemode.utils.StatusBarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 
 /**
@@ -41,7 +43,8 @@ import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
  * Date: 10/4/16
  */
 
-public class DetailCollectionActivity extends BaseActivity implements DetailCollectionView,MyCollectView {
+public class DetailCollectionActivity extends BaseActivity implements DetailCollectionView,
+    MyCollectView {
 
   private DetailCollectionPresenter presenter;
   private List<UnsplashPicture> unsplashPictures = new ArrayList<>();
@@ -62,6 +65,7 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
   private List<UnsplashCollection> otherUnsplashCollections = new ArrayList<>();
   private CollectionGridAdapter collectionGridAdapter;
   private MyCollectPresenter collectPresenter;
+
   @Override
   public void initPresenter() {
     presenter = new DetailCollectionPresenter(this);
@@ -79,6 +83,7 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     unsplashCollection = (UnsplashCollection) getIntent().getSerializableExtra("collection");
+    StatusBarUtils.setTranslucentStatus(this, true);
     initView();
     initData();
     initEvent();
@@ -87,6 +92,12 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
   @Override
   public void setCustomLayout() {
     setContentView(R.layout.activity_collection_detail);
+  }
+
+  @OnClick(R.id.iv_toolbar)
+  public void showDetailPicture() {
+    FullPictureActivity.toThisActivityFromNet(DetailCollectionActivity.this, unsplashCollection
+        .getCover());
   }
 
   private void initEvent() {
@@ -217,6 +228,7 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
         .VERTICAL, false);
     recyclerView.setLayoutManager(picLayoutManager);
     recyclerView.setItemAnimator(new ScaleInAnimator());
+    recyclerView.setNestedScrollingEnabled(false);
     showOtherCollectionLayout();
     MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(this, LinearLayoutManager
         .HORIZONTAL, false);
@@ -289,7 +301,7 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.collection_menu,menu);
+    getMenuInflater().inflate(R.menu.collection_menu, menu);
     return super.onCreateOptionsMenu(menu);
   }
 

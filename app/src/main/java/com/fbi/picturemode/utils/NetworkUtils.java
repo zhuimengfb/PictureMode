@@ -45,4 +45,12 @@ public class NetworkUtils {
       return -1;
     }
   }
+
+  public static boolean isWifiNetwork() {
+    return getNetworkType() == ConnectivityManager.TYPE_WIFI;
+  }
+
+  public static boolean isMobileNetwork() {
+    return getNetworkType() == ConnectivityManager.TYPE_MOBILE;
+  }
 }

@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="200dp"
+                    android:layout_marginTop="205dp"
                     android:textColor="@color/white"
                     />
             </RelativeLayout>
@@ -61,7 +61,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
+    <com.fbi.picturemode.activity.widget.MyNestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -70,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
 
             <android.support.v7.widget.CardView
@@ -114,7 +115,6 @@
                             android:layout_centerHorizontal="true"
                             android:text="name"
                             android:textColor="@color/colorPrimary"
-                            android:textStyle="italic"
                             android:textSize="17sp"
                             />
 
@@ -213,7 +213,7 @@
                         layout="@layout/layout_loading"/>
                 </RelativeLayout>
 
-                <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -221,14 +221,13 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     >
 
-                </com.marshalchen.ultimaterecyclerview.UltimateRecyclerView>
+                </android.support.v7.widget.RecyclerView>
             </RelativeLayout>
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </com.fbi.picturemode.activity.widget.MyNestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

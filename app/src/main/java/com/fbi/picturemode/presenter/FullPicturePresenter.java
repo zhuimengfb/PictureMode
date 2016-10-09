@@ -5,6 +5,10 @@ import com.fbi.picturemode.db.contract.MyCollectContract;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.model.UnsplashModel;
 import com.fbi.picturemode.utils.Constants;
+import com.fbi.picturemode.utils.SetWallpaperUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 import rx.Subscriber;
 
@@ -29,7 +33,7 @@ public class FullPicturePresenter extends BasePresenter<FullPictureView> {
 
   @Override
   protected void destroyModel() {
-    model=null;
+    model = null;
   }
 
   public void collectPicture(String id) {
@@ -60,7 +64,7 @@ public class FullPicturePresenter extends BasePresenter<FullPictureView> {
   public void downloadPicture(UnsplashPicture unsplashPicture) {
     getView().showLoading();
     getSubscriptions().add(model.downloadPicture(unsplashPicture.getUnsplashPictureLinks()
-        .getFull(), unsplashPicture.getId(), new Subscriber<Integer>() {
+        .getFull(), unsplashPicture.getId(), new Subscriber<String>() {
 
       @Override
       public void onCompleted() {
@@ -73,21 +77,54 @@ public class FullPicturePresenter extends BasePresenter<FullPictureView> {
       }
 
       @Override
-      public void onNext(Integer integer) {
+      public void onNext(String code) {
         getView().stopLoading();
-        switch (integer) {
+        switch (code) {
           case Constants.CODE_PICTURE_DOWNLOAD_ALREADY:
             getView().showDownloadAlready();
             break;
-          case Constants.CODE_PICTURE_DOWNLOAD_SUCCESS:
-            getView().showDownloadSuccess();
-            break;
           case Constants.CODE_PICTURE_DOWNLOAD_FAIL:
             getView().showDownloadFail();
+            break;
+          default:
+            getView().showDownloadSuccess();
             break;
         }
       }
     }));
   }
 
+  public void setWallpaperFromNet(UnsplashPicture picture) {
+    getView().showLoading();
+    getSubscriptions().add(model.downloadPicture(picture.getUnsplashPictureLinks()
+        .getFull(), picture.getId(), new Subscriber<String>() {
+
+      @Override
+      public void onCompleted() {
+
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        e.printStackTrace();
+      }
+
+      @Override
+      public void onNext(String code) {
+        getView().stopLoading();
+        if (Constants.CODE_PICTURE_DOWNLOAD_FAIL.equals(code)) {
+          getView().showSetWallpaperFail();
+        } else if (Constants.CODE_PICTURE_DOWNLOAD_ALREADY.equals(code)) {
+          getView().showAlreadySetWallpaper();
+        } else {
+          try {
+            SetWallpaperUtils.setWallpaperFromFile(new File(code));
+            getView().showSetWallpaperSuccess();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }));
+  }
 }

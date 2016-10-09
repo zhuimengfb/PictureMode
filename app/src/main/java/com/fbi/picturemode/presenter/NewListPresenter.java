@@ -20,7 +20,7 @@ import static android.content.ContentValues.TAG;
 
 public class NewListPresenter extends BasePresenter<NewListView> {
   private int currentPage = 1;
-  private int pageNum = 20;
+  private int pageNum = 10;
   private UnsplashModel model;
 
   public NewListPresenter(NewListView baseView) {
@@ -61,31 +61,33 @@ public class NewListPresenter extends BasePresenter<NewListView> {
           @Override
           public void onError(Throwable e) {
             e.printStackTrace();
-            getView().stopRefreshing();
-            getView().loadingComplete();
-            getSubscriptions().add(model.getPagePictureFromDB(page, pageNum, new
-                Subscriber<List<UnsplashPicture>>() {
-                  @Override
-                  public void onCompleted() {
+            if (getView() != null) {
+              getView().stopRefreshing();
+              getView().loadingComplete();
+              getSubscriptions().add(model.getPagePictureFromDB(page, pageNum, new
+                  Subscriber<List<UnsplashPicture>>() {
+                    @Override
+                    public void onCompleted() {
 
-                  }
-
-                  @Override
-                  public void onError(Throwable e) {
-
-                  }
-
-                  @Override
-                  public void onNext(List<UnsplashPicture> unsplashPictures) {
-                    if (currentPage == 1) {
-                      getView().updateFirstPageList(unsplashPictures);
-                      getView().stopRefreshing();
-                    } else {
-                      getView().updatePictureList(unsplashPictures);
-                      getView().loadingComplete();
                     }
-                  }
-                }));
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<UnsplashPicture> unsplashPictures) {
+                      if (currentPage == 1) {
+                        getView().updateFirstPageList(unsplashPictures);
+                        getView().stopRefreshing();
+                      } else {
+                        getView().updatePictureList(unsplashPictures);
+                        getView().loadingComplete();
+                      }
+                    }
+                  }));
+            }
           }
 
           @Override

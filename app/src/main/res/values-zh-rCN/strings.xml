@@ -28,7 +28,7 @@
     <string name="download_already">已经下载过了!</string>
     <string name="download_success">下载成功!</string>
     <string name="download_fail">下载失败!</string>
-    <string name="download_large_pic_by_mobile">移动网络下下载高清壁纸</string>
+    <string name="download_large_pic_by_mobile">移动网络下自动更换首页壁纸</string>
     <string name="clear_cache">清除缓存</string>
     <string name="picture_path">下载壁纸路径</string>
     <string name="picture_size">已下载壁纸</string>
@@ -40,5 +40,9 @@
     <string name="about_third">Photo Mode是由FBi在无聊的时候突发奇想开发出来的,由于FBi是壁纸控,奈何Unsplash没有Android版本,所以自己动手写了一个简单的版本</string>
     <string name="about_fourth">然而假期时间较短,所以第一版略微简陋,嗯,争取在后续版本中进行改进</string>
     <string name="about_fifth_content">友情提示:所有图片都是高清大图,所以请耐心等待并且建议在WIFI下使用</string>
+    <string name="set_wallpaper_success">设置壁纸成功</string>
+    <string name="set_wallpaper_fail">设置壁纸失败,请稍后再试</string>
+    <string name="set_wallpaper">设为壁纸</string>
+    <string name="set_wallpaper_already">已设置为壁纸</string>
 
 </resources>

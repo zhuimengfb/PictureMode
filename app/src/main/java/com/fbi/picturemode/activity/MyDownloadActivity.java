@@ -144,8 +144,9 @@ public class MyDownloadActivity extends BaseActivity implements MyDownloadView {
   @Override
   public void showDeleteSuccess(int position) {
     Snackbar.make(recyclerView, R.string.delete_success, Snackbar.LENGTH_SHORT).show();
+    adapter.notifyItemRemoved(position);
     myDownloads.remove(position);
-    adapter.notifyDataSetChanged();
+//    adapter.notifyDataSetChanged();
   }
 
   @Override

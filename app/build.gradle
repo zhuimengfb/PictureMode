@@ -6,10 +6,10 @@ android {
     buildToolsVersion "24.0.0"
     defaultConfig {
         applicationId "com.fbi.picturemode"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 24
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 11
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构

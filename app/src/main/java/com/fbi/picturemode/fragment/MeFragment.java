@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,9 @@ import com.fbi.picturemode.activity.SettingActivity;
 import com.fbi.picturemode.activity.widget.MyLinearLayoutManager;
 import com.fbi.picturemode.adapter.UserItemRecyclerAdapter;
 import com.fbi.picturemode.entity.UserItem;
-import com.fbi.picturemode.utils.GlideUtils;
 import com.fbi.picturemode.utils.sharedpreference.UserSharedPreferences;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,17 +71,13 @@ public class MeFragment extends BaseFragment {
   }
 
   private void initData() {
-    String url = UserSharedPreferences.getInstance(getActivity()).getUserIconUrl();
-    if (!TextUtils.isEmpty(url)) {
-      Glide.with(this).load(url).error(R.drawable.default_avatar_picture).bitmapTransform(new
-          CropCircleTransformation(MyApp.getContext())).into(userIcon);
-    } else {
-      GlideUtils.showUserIcon(userIcon, url, R.drawable.default_avatar_picture);
-    }
+    String url = UserSharedPreferences.getInstance(MyApp.getContext()).getUserIconUrl();
+    Glide.with(this).load(new File(url)).error(R.drawable.default_avatar).bitmapTransform(new
+        CropCircleTransformation(MyApp.getContext())).into(userIcon);
     userName.setText(getString(R.string.app_name));
-    userItems.add(new UserItem(getString(R.string.my_download), "", R.drawable.tag_download,
+    userItems.add(new UserItem(getString(R.string.my_download), "", R.mipmap.tag_download,
         MyDownloadActivity.class));
-    userItems.add(new UserItem(getString(R.string.my_collections), "", R.drawable.tag_like,
+    userItems.add(new UserItem(getString(R.string.my_collections), "", R.mipmap.tag_like,
         MyCollectionActivity.class));
     adapter = new UserItemRecyclerAdapter(getActivity(), userItems);
     userRecyclerView.setAdapter(adapter);

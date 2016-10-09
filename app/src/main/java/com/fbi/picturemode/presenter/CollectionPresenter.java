@@ -21,7 +21,7 @@ import static android.content.ContentValues.TAG;
 public class CollectionPresenter extends BasePresenter<CollectionsView> {
   private UnsplashModel model;
   private int currentPage = 1;
-  private int pageNum = 20;
+  private int pageNum = 12;
 
   public CollectionPresenter(CollectionsView baseView) {
     super(baseView);
@@ -61,44 +61,48 @@ public class CollectionPresenter extends BasePresenter<CollectionsView> {
           @Override
           public void onError(Throwable e) {
             e.printStackTrace();
-            getView().hideRefreshing();
-            getView().loadComplete();
-            getSubscriptions().add(model.getPageCollectionsFromDB(page, pageNum, new
-                Subscriber<List<UnsplashCollection>>() {
+            if (getView() != null) {
+              getView().hideRefreshing();
+              getView().loadComplete();
+              getSubscriptions().add(model.getPageCollectionsFromDB(page, pageNum, new
+                  Subscriber<List<UnsplashCollection>>() {
 
 
-                  @Override
-                  public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-                  }
-
-                  @Override
-                  public void onError(Throwable e) {
-
-                  }
-
-                  @Override
-                  public void onNext(List<UnsplashCollection> collections) {
-                    if (currentPage == 1) {
-                      getView().updateFirstPageCollections(collections);
-                      getView().hideRefreshing();
-                    } else {
-                      getView().updateNextPageCollections(collections);
-                      getView().loadComplete();
                     }
-                  }
-                }));
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<UnsplashCollection> collections) {
+                      if (currentPage == 1) {
+                        getView().updateFirstPageCollections(collections);
+                        getView().hideRefreshing();
+                      } else {
+                        getView().updateNextPageCollections(collections);
+                        getView().loadComplete();
+                      }
+                    }
+                  }));
+            }
           }
 
           @Override
           public void onNext(List<UnsplashCollection> unsplashCollections) {
             Log.d(TAG, "onNext: " + unsplashCollections.size());
-            if (currentPage == 1) {
-              getView().updateFirstPageCollections(unsplashCollections);
-              getView().hideRefreshing();
-            } else {
-              getView().updateNextPageCollections(unsplashCollections);
-              getView().loadComplete();
+            if (getView() != null) {
+              if (currentPage == 1) {
+                getView().updateFirstPageCollections(unsplashCollections);
+                getView().hideRefreshing();
+              } else {
+                getView().updateNextPageCollections(unsplashCollections);
+                getView().loadComplete();
+              }
             }
           }
         }));

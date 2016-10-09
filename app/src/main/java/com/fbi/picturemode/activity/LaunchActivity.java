@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,19 +24,13 @@ import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.views.LaunchView;
 import com.fbi.picturemode.presenter.LaunchPresenter;
 import com.fbi.picturemode.utils.GlideUtils;
-import com.fbi.picturemode.utils.sharedpreference.UnsplashSharedPreferences;
+import com.fbi.picturemode.utils.NetworkUtils;
 import com.fbi.picturemode.utils.sharedpreference.UserSharedPreferences;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.bumptech.glide.Glide.with;
 
@@ -53,18 +48,24 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   @BindView(R.id.tv_user_name) TextView userName;
   @BindView(R.id.tv_location) TextView location;
   @BindView(R.id.bt_skip) Button skipButton;
+  @BindView(R.id.bt_set_wallpaper) Button setWallpaper;
   @BindView(R.id.loading_layout) RelativeLayout loadingLayout;
   private LaunchPresenter launchPresenter;
-
+  private File localFile;
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     super.onCreate(savedInstanceState);
     launchPresenter.showLastPicture();
-    launchPresenter.getRandomPicture();
-    Log.d("path", "onCreate: " + UserSharedPreferences.getInstance(this).getUserPhotoBasePath());
+    if (NetworkUtils.isWifiNetwork() || isMobileNetworkAndUserPermitChange()) {
+      launchPresenter.getRandomPicture();
+    }
   }
 
+  private boolean isMobileNetworkAndUserPermitChange() {
+    return NetworkUtils.isMobileNetwork() && UserSharedPreferences
+        .getInstance(MyApp.getContext()).getDownloadHighQualityPictureUsingMobileNetwork();
+  }
   @Override
   public void setCustomLayout() {
     setContentView(R.layout.activity_launch);
@@ -73,6 +74,11 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   @OnClick(R.id.bt_skip)
   public void skip() {
     MainActivity.toMainActivityAndKillSelf(LaunchActivity.this);
+  }
+
+  @OnClick(R.id.bt_set_wallpaper)
+  public void setWallpaper() {
+    launchPresenter.setWallpaper();
   }
 
   @Override
@@ -120,61 +126,20 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
     }
   }
 
-  public void showLoading(){
+  public void showLoading() {
     loadingLayout.setVisibility(View.VISIBLE);
   }
 
-  public void preload(final String url) {
-    Observable.just(url)
-        .map(new Func1<String, File>() {
-          @Override
-          public File call(String s) {
-            File file = null;
-            try {
-              file = with(MyApp.getContext()).load(Uri.parse(url)).downloadOnly(Target
-                  .SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-              Log.d("path", file.getAbsolutePath());
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            } catch (ExecutionException e) {
-              e.printStackTrace();
-            }
-            return file;
-          }
-        })
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<File>() {
-          @Override
-          public void onCompleted() {
-
-          }
-
-          @Override
-          public void onError(Throwable e) {
-
-          }
-
-          @Override
-          public void onNext(File file) {
-            if (file != null) {
-              UnsplashSharedPreferences.getInstance(MyApp.getContext()).updateLastLocalPath(file
-                  .getAbsolutePath());
-            }
-          }
-        });
-
-  }
 
   @Override
   public void showLocalPicture(String lastLocalPath, String lastRandomPictureLink, String
       lastRandomColor) {
     launchPicture.setBackgroundColor(Color.parseColor(lastRandomColor));
     showLoading();
-    final File file = new File(lastLocalPath);
-    if (file.exists()) {
+    localFile = new File(lastLocalPath);
+    if (localFile.exists()) {
       Log.d("from disk", "true");
-      Glide.with(this).load(file).listener(new RequestListener<File, GlideDrawable>() {
+      Glide.with(this).load(localFile).listener(new RequestListener<File, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean
             isFirstResource) {
@@ -186,7 +151,6 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
             target, boolean isFromMemoryCache, boolean isFirstResource) {
           hideLoading();
           Log.d("source", "onResourceReady: " + isFromMemoryCache);
-          boolean success = file.delete();
           return false;
         }
       }).into(launchPicture);
@@ -199,6 +163,21 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   @Override
   public void showDefaultPicture() {
     Glide.with(this).load(R.drawable.default_picture).into(launchPicture);
+  }
+
+  @Override
+  public void hideSetWallpaper() {
+    setWallpaper.setVisibility(View.GONE);
+  }
+
+  @Override
+  public void showSetWallpaperSuccess() {
+    Snackbar.make(launchPicture, R.string.set_wallpaper_success, Snackbar.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void showSetWallpaperFail() {
+    Snackbar.make(launchPicture, R.string.set_wallpaper_fail, Snackbar.LENGTH_SHORT).show();
   }
 
   @Override
@@ -215,5 +194,8 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   protected void onDestroy() {
     super.onDestroy();
     launchPresenter.onDestroy();
+    if (localFile != null) {
+//      boolean success = localFile.delete();
+    }
   }
 }

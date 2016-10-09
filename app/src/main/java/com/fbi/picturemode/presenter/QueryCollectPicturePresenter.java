@@ -40,7 +40,9 @@ public class QueryCollectPicturePresenter extends BasePresenter<QueryCollectPict
 
       @Override
       public void onError(Throwable e) {
-        getView().showNoCollectPictures();
+        if (getView() != null) {
+          getView().showNoCollectPictures();
+        }
       }
 
       @Override

@@ -37,7 +37,6 @@
                 android:text="@string/user_name"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
-                android:textStyle="italic"
                 />
             <ImageView
                 android:id="@+id/iv_settings"

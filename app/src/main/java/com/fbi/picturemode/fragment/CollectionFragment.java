@@ -60,7 +60,6 @@ public class CollectionFragment extends BaseFragment implements CollectionsView 
   private void initView() {
     recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
     recyclerView.setItemAnimator(new ScaleInAnimator());
-
   }
 
   private void initData() {

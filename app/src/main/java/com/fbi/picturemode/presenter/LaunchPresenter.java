@@ -2,19 +2,22 @@ package com.fbi.picturemode.presenter;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.activity.views.LaunchView;
-import com.fbi.picturemode.config.GlobalConfig;
 import com.fbi.picturemode.entity.UnsplashLocation;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.model.UnsplashModel;
+import com.fbi.picturemode.utils.Constants;
+import com.fbi.picturemode.utils.FileUtils;
+import com.fbi.picturemode.utils.SetWallpaperUtils;
 import com.fbi.picturemode.utils.sharedpreference.UnsplashSharedPreferences;
 import com.fbi.picturemode.utils.sharedpreference.UserSharedPreferences;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
@@ -46,7 +49,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
 
   @Override
   protected void destroyModel() {
-    unsplashModel=null;
+    unsplashModel = null;
   }
 
   public void getRandomPicture() {
@@ -60,8 +63,9 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
       public void onError(Throwable e) {
         e.printStackTrace();
         showLastPicture();
-        getView().hideLoading();
-        GlobalConfig.changeClientId();
+        if (getView() != null) {
+          getView().hideLoading();
+        }
       }
 
       @Override
@@ -73,18 +77,27 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
               .getLarge();
           final String userName = unsplashPicture.getUnsplashUser().getUserName();
           final UnsplashLocation unsplashLocation = unsplashPicture.getLocation();
-          Observable.just(pictureUrl)
+          getSubscriptions().add(Observable.just(pictureUrl)
               .map(new Func1<String, File>() {
                 @Override
                 public File call(String s) {
+                  String path = Constants.BASE_PHOTO_TEMP_PATH + "/" + unsplashPicture.getId() +
+                      ".png";
                   File file = null;
                   try {
-                    file = with(MyApp.getContext()).load(Uri.parse(s)).downloadOnly(Target
-                        .SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-                    Log.d("path", file.getAbsolutePath());
-                  } catch (InterruptedException e) {
-                    e.printStackTrace();
-                  } catch (ExecutionException e) {
+                    file = new File(path);
+                    if (!file.exists()) {
+                      file.createNewFile();
+                    }
+                    File originFile = with(MyApp.getContext()).load(Uri.parse(s)).downloadOnly
+                        (Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                    FileUtils.copyFileUsingFileChannels(originFile, file);
+                    File oldFile = new File(UnsplashSharedPreferences.getInstance(MyApp
+                        .getContext()).getLastLocalPath());
+                    if (oldFile.exists()) {
+                      oldFile.delete();
+                    }
+                  } catch (Exception e) {
                     e.printStackTrace();
                   }
                   return file;
@@ -105,7 +118,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
 
                 @Override
                 public void onNext(File file) {
-                  if (file != null) {
+                  if (file != null && file.length() > 1000) {
                     UnsplashSharedPreferences unsplashSharedPreferences = UnsplashSharedPreferences
                         .getInstance(MyApp.getContext());
                     unsplashSharedPreferences.updateLastLocalPath(file.getPath());
@@ -125,7 +138,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
                     }
                   }
                 }
-              });
+              }));
         }
       }
     }));
@@ -138,19 +151,84 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
           .getContext());
       if (UserSharedPreferences.getInstance(MyApp.getContext()).isFirstLaunch()) {
         getView().showDefaultPicture();
+        getView().hideSetWallpaper();
         UserSharedPreferences.getInstance(MyApp.getContext()).setFirstLauncFalse();
       } else if (TextUtils.isEmpty(preferences.getLastRandomPictureLink()) && TextUtils.isEmpty
           (preferences.getLastLocalPath())) {
         getView().showDefaultPicture();
+        getView().hideSetWallpaper();
       } else {
         getView().showLocalPicture(preferences.getLastLocalPath(), preferences
             .getLastRandomPictureLink(), preferences.getLastRandomColor());
         UserSharedPreferences.getInstance(MyApp.getContext()).updateUserIconUrl
-            (preferences.getKeyLastRandomPictureLinkRegular());
+            (preferences.getLastLocalPath());
         getView().showUserIcon(preferences.getLastRandomUserLink());
         getView().showLocation(preferences.getLastRandomLocation());
         getView().showUserName(preferences.getLastRandomUserName());
       }
+    }
+  }
+
+  public void setWallpaper() {
+    UnsplashSharedPreferences preferences = UnsplashSharedPreferences.getInstance(MyApp
+        .getContext());
+    File file = new File(preferences.getLastLocalPath());
+    if (file.exists()) {
+      try {
+        SetWallpaperUtils.setWallpaperFromFile(file);
+        getView().showSetWallpaperSuccess();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } else {
+      getSubscriptions().add(Observable.just(preferences.getLastRandomPictureLink())
+          .map(new Func1<String, File>() {
+            @Override
+            public File call(String s) {
+              try {
+                return Glide.with(MyApp.getContext()).load(s).downloadOnly
+                    (Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              } catch (ExecutionException e) {
+                e.printStackTrace();
+              }
+              return null;
+            }
+          })
+          .subscribeOn(Schedulers.newThread())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Subscriber<File>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+              if (getView() != null) {
+                getView().showSetWallpaperFail();
+              }
+            }
+
+            @Override
+            public void onNext(File file) {
+              if (file != null) {
+                try {
+                  SetWallpaperUtils.setWallpaperFromFile(file);
+                  if (getView() != null) {
+                    getView().showSetWallpaperSuccess();
+                  }
+                  file.delete();
+                } catch (IOException e) {
+                  e.printStackTrace();
+                  if (getView() != null) {
+                    getView().showSetWallpaperFail();
+                  }
+                }
+              }
+            }
+          }));
     }
   }
 }

@@ -21,7 +21,7 @@ import static android.content.ContentValues.TAG;
 public class PictureDetailPresenter extends BasePresenter<DetailPictureView> {
   private UnsplashModel model;
   private int currentPage = 1;
-  private int pageNum = 20;
+  private int pageNum = 200;
 
   public PictureDetailPresenter(DetailPictureView baseView) {
     super(baseView);

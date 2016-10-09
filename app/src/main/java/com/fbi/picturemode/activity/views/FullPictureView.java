@@ -22,4 +22,10 @@ public interface FullPictureView extends BaseView {
   void showLoading();
 
   void stopLoading();
+
+  void showSetWallpaperSuccess();
+
+  void showSetWallpaperFail();
+
+  void showAlreadySetWallpaper();
 }

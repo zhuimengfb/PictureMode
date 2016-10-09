@@ -20,9 +20,13 @@ public interface LaunchView extends BaseView {
 
   void hideLoading();
 
-  void preload(String pictureUrl);
-
   void showLocalPicture(String lastLocalPath, String lastRandomPictureLink, String lastRandomColor);
 
   void showDefaultPicture();
+
+  void hideSetWallpaper();
+
+  void showSetWallpaperSuccess();
+
+  void showSetWallpaperFail();
 }

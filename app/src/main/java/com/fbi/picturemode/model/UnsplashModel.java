@@ -307,11 +307,11 @@ public class UnsplashModel extends BaseModel {
         .subscribe(subscriber);
   }
 
-  public Subscription downloadPicture(final String url, final String photoId, Subscriber<Integer>
+  public Subscription downloadPicture(final String url, final String photoId, Subscriber<String>
       subscriber) {
-    return Observable.just(photoId).map(new Func1<String, Integer>() {
+    return Observable.just(photoId).map(new Func1<String, String>() {
       @Override
-      public Integer call(String s) {
+      public String call(String s) {
         MyDownloadDataHelper dataHelper = MyDownloadDataHelper.getInstance(MyApp.getContext());
         if (dataHelper.downloadAlready(photoId)) {
           return Constants.CODE_PICTURE_DOWNLOAD_ALREADY;
@@ -333,9 +333,9 @@ public class UnsplashModel extends BaseModel {
           if (pictureFile != null) {
             MyDownloadDataHelper.getInstance(MyApp.getContext()).insertMyDownload(photoId,
                 localPath);
-            return Constants.CODE_PICTURE_DOWNLOAD_SUCCESS;
+            return localPath;
           } else {
-            return Constants.CODE_PICTURE_DOWNLOAD_SUCCESS;
+            return Constants.CODE_PICTURE_DOWNLOAD_FAIL;
           }
         }
       }

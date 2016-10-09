@@ -10,6 +10,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fbi.picturemode.MyApp;
+import com.fbi.picturemode.R;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
@@ -39,7 +40,7 @@ public class GlideUtils {
         @Override
         public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable>
             target, boolean isFromMemoryCache, boolean isFirstResource) {
-          Log.d(TAG, "onResourceReady: "+isFirstResource+" "+isFromMemoryCache);
+          Log.d(TAG, "onResourceReady: " + isFirstResource + " " + isFromMemoryCache);
           return false;
         }
       }).into(imageView);
@@ -49,11 +50,12 @@ public class GlideUtils {
   public static void showUserIcon(ImageView imageView, String url) {
     if (imageView != null) {
       Glide.with(MyApp.getContext()).load(Uri.parse(url)).bitmapTransform(new
-          CropCircleTransformation(MyApp.getContext())).into(imageView);
+          CropCircleTransformation(MyApp.getContext())).error(R.drawable.default_avatar).into
+          (imageView);
     }
   }
 
-  public static void showUserIcon(ImageView imageView, String url,int defaultRes) {
+  public static void showUserIcon(ImageView imageView, String url, int defaultRes) {
     if (imageView != null) {
       Glide.with(MyApp.getContext()).load(Uri.parse(url)).error(defaultRes).bitmapTransform(new
           CropCircleTransformation(MyApp.getContext())).into(imageView);

@@ -99,7 +99,6 @@
                             android:text="name"
                             android:textColor="@color/colorPrimary"
                             android:textSize="17sp"
-                            android:textStyle="italic"
                             />
 
                         <RelativeLayout

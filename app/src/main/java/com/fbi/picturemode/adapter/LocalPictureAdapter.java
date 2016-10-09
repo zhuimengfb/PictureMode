@@ -1,6 +1,7 @@
 package com.fbi.picturemode.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +65,13 @@ public class LocalPictureAdapter extends UltimateViewAdapter<LocalPictureAdapter
   public void onBindViewHolder(LocalPictureViewHolder holder, final int position) {
     ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
     params.height = (int) (300 + Math.random() * 400);
-//    holder.itemView.setLayoutParams(params);
-    Glide.with(MyApp.getContext()).load(myDownloads.get(position).getLocalAddress())
-        .into(holder.localPicture);
+    holder.itemView.setLayoutParams(params);
+    if (!TextUtils.equals((String) holder.localPicture.getTag(), myDownloads.get(position)
+        .getLocalAddress())) {
+      Glide.with(MyApp.getContext()).load(myDownloads.get(position).getLocalAddress())
+          .into(holder.localPicture);
+      holder.localPicture.setTag(myDownloads.get(position).getLocalAddress());
+    }
     holder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
