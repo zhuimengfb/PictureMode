@@ -3,7 +3,8 @@ package com.fbi.picturemode.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,16 +14,16 @@ import android.widget.RelativeLayout;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.views.MyDownloadView;
 import com.fbi.picturemode.adapter.LocalPictureAdapter;
+import com.fbi.picturemode.adapter.OnRecyclerItemClickListener;
 import com.fbi.picturemode.entity.MyDownload;
 import com.fbi.picturemode.presenter.MyDownloadPresenter;
 import com.fbi.picturemode.utils.Constants;
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 
 /**
  * Author: FBi.
@@ -33,11 +34,12 @@ import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 public class MyDownloadActivity extends BaseActivity implements MyDownloadView {
 
   @BindView(R.id.empty_layout) RelativeLayout emptyLayout;
-  @BindView(R.id.download_recycler_view) UltimateRecyclerView recyclerView;
+  @BindView(R.id.download_recycler_view) RecyclerView recyclerView;
   private int currentMode = Constants.MANAGE_COLLECT_MODE_NORMAL;
   private LocalPictureAdapter adapter;
   private List<MyDownload> myDownloads = new ArrayList<>();
   private MyDownloadPresenter presenter;
+  private static final int INDEX_MYDOWNLOAD_NOT_FOUND = -1;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,9 +52,8 @@ public class MyDownloadActivity extends BaseActivity implements MyDownloadView {
   }
 
   private void initView() {
-    recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager
-        .VERTICAL));
-    recyclerView.setItemAnimator(new FadeInAnimator());
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+    recyclerView.setItemAnimator(new ScaleInAnimator());
   }
 
   private void initData() {
@@ -62,20 +63,25 @@ public class MyDownloadActivity extends BaseActivity implements MyDownloadView {
   }
 
   private void initEvent() {
-    adapter.addOnItemClickListener(new LocalPictureAdapter.OnItemClickListener() {
+    recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView) {
       @Override
-      public void onItemClick(View view, int position) {
-        FullPictureActivity.toThisActivityFromLocal(MyDownloadActivity.this, myDownloads.get
-            (position));
+      public void onItemClick(RecyclerView.ViewHolder vh) {
+        if (currentMode == Constants.MANAGE_COLLECT_MODE_DELETE) {
+          presenter.deleteDownloadPicture(myDownloads.get(vh.getAdapterPosition()), vh
+              .getAdapterPosition());
+        } else {
+          FullPictureActivity.toThisActivityFromLocal(MyDownloadActivity.this, myDownloads.get
+              (vh.getAdapterPosition()));
+        }
       }
-    });
-    adapter.addOnItemDeleteListener(new LocalPictureAdapter.OnItemDeleteListener() {
+
       @Override
-      public void onItemDelete(int position) {
-        presenter.deleteDownloadPicture(myDownloads.get(position), position);
+      public void onLongClick(RecyclerView.ViewHolder vh) {
+
       }
     });
   }
+
 
   @Override
   public void setCustomLayout() {
@@ -144,8 +150,8 @@ public class MyDownloadActivity extends BaseActivity implements MyDownloadView {
   @Override
   public void showDeleteSuccess(int position) {
     Snackbar.make(recyclerView, R.string.delete_success, Snackbar.LENGTH_SHORT).show();
-    adapter.notifyItemRemoved(position);
     myDownloads.remove(position);
+    adapter.notifyItemRemoved(position);
 //    adapter.notifyDataSetChanged();
   }
 

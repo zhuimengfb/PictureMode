@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,19 +14,20 @@ import android.widget.RelativeLayout;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.DetailPictureActivity;
 import com.fbi.picturemode.adapter.NewPictureRecyclerAdapter;
+import com.fbi.picturemode.adapter.OnRecyclerItemClickListener;
 import com.fbi.picturemode.commonview.MyCollectView;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.fragment.views.QueryCollectPictureView;
 import com.fbi.picturemode.presenter.MyCollectPresenter;
 import com.fbi.picturemode.presenter.QueryCollectPicturePresenter;
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
+import com.fbi.picturemode.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 
 /**
  * Author: FBi.
@@ -36,14 +38,14 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 public class MyCollectPictureFragment extends BaseFragment implements MyCollectView,
     QueryCollectPictureView {
 
-
   @BindView(R.id.empty_layout) RelativeLayout emptyLayout;
-  @BindView(R.id.my_collect_picture_recycler_view) UltimateRecyclerView recyclerView;
+  @BindView(R.id.my_collect_picture_recycler_view) RecyclerView recyclerView;
 
   private NewPictureRecyclerAdapter adapter;
   private List<UnsplashPicture> unsplashPictures = new ArrayList<>();
   private MyCollectPresenter presenter;
   private QueryCollectPicturePresenter queryPresenter;
+  private int currentMode = Constants.MANAGE_COLLECT_MODE_NORMAL;
 
   public static MyCollectPictureFragment newInstance() {
     return new MyCollectPictureFragment();
@@ -64,16 +66,20 @@ public class MyCollectPictureFragment extends BaseFragment implements MyCollectV
   }
 
   private void initEvent() {
-    adapter.addOnItemDeleteListener(new NewPictureRecyclerAdapter.OnItemDeleteListener() {
+    recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView) {
       @Override
-      public void onItemDelete(int position) {
-        presenter.deleteCollect(unsplashPictures.get(position).getId(), position);
+      public void onItemClick(RecyclerView.ViewHolder vh) {
+        int position = vh.getAdapterPosition();
+        if (currentMode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
+          DetailPictureActivity.toThisActivity(getActivity(), unsplashPictures.get(position));
+        } else {
+          presenter.deleteCollect(unsplashPictures.get(position).getId(), position);
+        }
       }
-    });
-    adapter.addOnItemClickListener(new NewPictureRecyclerAdapter.OnItemClickListener() {
+
       @Override
-      public void onItemClick(View view, int position) {
-        DetailPictureActivity.toThisActivity(getActivity(), unsplashPictures.get(position));
+      public void onLongClick(RecyclerView.ViewHolder vh) {
+
       }
     });
   }
@@ -86,7 +92,7 @@ public class MyCollectPictureFragment extends BaseFragment implements MyCollectV
 
   private void initView() {
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    recyclerView.setItemAnimator(new SlideInLeftAnimator());
+    recyclerView.setItemAnimator(new ScaleInAnimator());
   }
 
   @Override
@@ -120,7 +126,7 @@ public class MyCollectPictureFragment extends BaseFragment implements MyCollectV
   public void showDeleteSuccess(int position) {
     Snackbar.make(recyclerView, R.string.delete_success, Snackbar.LENGTH_SHORT).show();
     unsplashPictures.remove(position);
-    adapter.notifyDataSetChanged();
+    adapter.notifyItemRemoved(position);
     if (unsplashPictures.size() == 0) {
       showNoCollectPictures();
     }
@@ -143,6 +149,7 @@ public class MyCollectPictureFragment extends BaseFragment implements MyCollectV
   }
 
   public void setMode(int mode) {
+    currentMode = mode;
     if (adapter != null) {
       adapter.setMode(mode);
     }

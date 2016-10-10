@@ -120,4 +120,8 @@ public class MyCollectionActivity extends BaseActivity {
       return "";
     }
   }
+
+  public int getCurrentMode() {
+    return currentMode;
+  }
 }

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.views.DetailPictureView;
 import com.fbi.picturemode.activity.widget.MyLinearLayoutManager;
@@ -22,6 +23,7 @@ import com.fbi.picturemode.entity.UnsplashExif;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.presenter.MyCollectPresenter;
 import com.fbi.picturemode.presenter.PictureDetailPresenter;
+import com.fbi.picturemode.utils.DateUtils;
 import com.fbi.picturemode.utils.GlideUtils;
 import com.fbi.picturemode.utils.NetworkUtils;
 import com.fbi.picturemode.utils.StatusBarUtils;
@@ -55,6 +57,7 @@ public class DetailPictureActivity extends BaseActivity implements DetailPicture
   @BindView(R.id.tag_location) ImageView locationImage;
   @BindView(R.id.tv_personal_web) TextView personalWeb;
   @BindView(R.id.tag_web) ImageView personalWebImage;
+  @BindView(R.id.layout_info) RelativeLayout infoLayout;
 
   private MyCollectPresenter collectPresenter;
   private PictureDetailPresenter presenter;
@@ -71,6 +74,32 @@ public class DetailPictureActivity extends BaseActivity implements DetailPicture
     showData(picture);
     presenter.getDetailPicture(picture.getId());
     initEvent();
+  }
+
+  @OnClick(R.id.layout_info)
+  public void showPicInfo() {
+    MaterialDialog materialDialog = new MaterialDialog.Builder(this).title(R.string
+        .pic_title_info).titleColorRes(R.color.colorPrimary).customView(R.layout
+        .item_show_info, true).positiveText(R.string.confirm).positiveColorRes(R.color
+        .colorPrimary).build();
+    View view = materialDialog.getCustomView();
+    if (view != null) {
+      ((TextView) view.findViewById(R.id.tv_publish_time)).setText(DateUtils.formatDate(picture
+          .getCreatedTime()));
+      ((TextView) view.findViewById(R.id.tv_dimension)).setText(picture.getWidth() + "*" +
+          picture.getHeight());
+      ((TextView) view.findViewById(R.id.tv_camera)).setText(picture.getExifInfo().getMake());
+      ((TextView) view.findViewById(R.id.tv_model)).setText(picture.getExifInfo().getModel());
+      ((TextView) view.findViewById(R.id.tv_exposure_time)).setText(picture.getExifInfo()
+          .getExposureTime());
+      ((TextView) view.findViewById(R.id.tv_aperture)).setText(picture.getExifInfo()
+          .getAperture());
+      ((TextView) view.findViewById(R.id.tv_focal_length)).setText(picture.getExifInfo()
+          .getFocalLength());
+      ((TextView) view.findViewById(R.id.tv_iso)).setText(String.valueOf(picture.getExifInfo()
+          .getIso()));
+    }
+    materialDialog.show();
   }
 
   private void initEvent() {
@@ -200,6 +229,7 @@ public class DetailPictureActivity extends BaseActivity implements DetailPicture
   @Override
   public void updatePictureInfo(UnsplashPicture unsplashPicture) {
     picture = unsplashPicture;
+    infoLayout.setVisibility(View.VISIBLE);
   }
 
   @Override

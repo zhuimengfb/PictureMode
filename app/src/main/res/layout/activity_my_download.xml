@@ -19,14 +19,14 @@
             layout="@layout/item_empty_layout"/>
     </RelativeLayout>
 
-    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/download_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_layout"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         >
-    </com.marshalchen.ultimaterecyclerview.UltimateRecyclerView>
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

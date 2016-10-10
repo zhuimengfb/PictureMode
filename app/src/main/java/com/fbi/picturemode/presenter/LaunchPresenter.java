@@ -97,6 +97,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
                     if (oldFile.exists()) {
                       oldFile.delete();
                     }
+                    originFile.delete();
                   } catch (Exception e) {
                     e.printStackTrace();
                   }

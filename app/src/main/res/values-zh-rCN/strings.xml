@@ -44,5 +44,14 @@
     <string name="set_wallpaper_fail">设置壁纸失败,请稍后再试</string>
     <string name="set_wallpaper">设为壁纸</string>
     <string name="set_wallpaper_already">已设置为壁纸</string>
+    <string name="time">发布时间</string>
+    <string name="dimension">分辨率</string>
+    <string name="model">型号</string>
+    <string name="exposure_time">曝光时间</string>
+    <string name="aperture">光圈</string>
+    <string name="focal_length">焦距</string>
+    <string name="iso">ISO</string>
+    <string name="confirm">确定</string>
+    <string name="pic_title_info">图片详情</string>
 
 </resources>

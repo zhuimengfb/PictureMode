@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +14,13 @@ import android.widget.RelativeLayout;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.DetailCollectionActivity;
 import com.fbi.picturemode.adapter.CollectionGridAdapter;
-import com.fbi.picturemode.adapter.NewPictureRecyclerAdapter;
+import com.fbi.picturemode.adapter.OnRecyclerItemClickListener;
 import com.fbi.picturemode.commonview.MyCollectView;
 import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.fragment.views.QueryCollectCollectionView;
 import com.fbi.picturemode.presenter.MyCollectPresenter;
 import com.fbi.picturemode.presenter.QueryCollectCollectionsPresenter;
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
+import com.fbi.picturemode.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,13 @@ public class MyCollectCollectionFragment extends BaseFragment implements MyColle
     QueryCollectCollectionView {
 
   @BindView(R.id.empty_layout) RelativeLayout emptyLayout;
-  @BindView(R.id.my_collect_collection_recycler_view) UltimateRecyclerView recyclerView;
+  @BindView(R.id.my_collect_collection_recycler_view) RecyclerView recyclerView;
 
   private CollectionGridAdapter adapter;
   private List<UnsplashCollection> unsplashCollections = new ArrayList<>();
   private MyCollectPresenter presenter;
   private QueryCollectCollectionsPresenter queryPresenter;
+  private int currentMode = Constants.MANAGE_COLLECT_MODE_NORMAL;
 
   public static MyCollectCollectionFragment newInstance() {
     return new MyCollectCollectionFragment();
@@ -64,16 +66,20 @@ public class MyCollectCollectionFragment extends BaseFragment implements MyColle
   }
 
   private void initEvent() {
-    adapter.addOnItemDeleteListener(new CollectionGridAdapter.OnItemDeleteListener() {
+    recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView) {
       @Override
-      public void onItemDelete(int position) {
-        presenter.deleteCollect("" + unsplashCollections.get(position).getId(), position);
+      public void onItemClick(RecyclerView.ViewHolder vh) {
+        int position = vh.getAdapterPosition();
+        if (currentMode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
+          DetailCollectionActivity.toThisActivity(getActivity(), unsplashCollections.get(position));
+        } else {
+          presenter.deleteCollect("" + unsplashCollections.get(position).getId(), position);
+        }
       }
-    });
-    adapter.addOnItemClickListener(new NewPictureRecyclerAdapter.OnItemClickListener() {
+
       @Override
-      public void onItemClick(View view, int position) {
-        DetailCollectionActivity.toThisActivity(getActivity(), unsplashCollections.get(position));
+      public void onLongClick(RecyclerView.ViewHolder vh) {
+
       }
     });
   }
@@ -121,7 +127,8 @@ public class MyCollectCollectionFragment extends BaseFragment implements MyColle
   public void showDeleteSuccess(int position) {
     Snackbar.make(recyclerView, R.string.delete_success, Snackbar.LENGTH_SHORT).show();
     unsplashCollections.remove(position);
-    adapter.notifyDataSetChanged();
+//    adapter.notifyDataSetChanged();
+    adapter.notifyItemRemoved(position);
     if (unsplashCollections.size() == 0) {
       showNoCollectPictures();
     }
@@ -141,6 +148,7 @@ public class MyCollectCollectionFragment extends BaseFragment implements MyColle
   }
 
   public void setMode(int mode) {
+    currentMode = mode;
     if (adapter != null) {
       adapter.setCurrentMode(mode);
     }

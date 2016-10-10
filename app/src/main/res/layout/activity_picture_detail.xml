@@ -51,10 +51,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="70dp"
                     android:layout_marginTop="205dp"
                     android:textColor="@color/white"
+                    android:visibility="gone"
                     />
+
+                <RelativeLayout
+                    android:id="@+id/layout_info"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="195dp"
+                    android:layout_alignParentRight="true"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    >
+
+                    <ImageView
+                        android:id="@+id/iv_info"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/info_icon"
+                        />
+                </RelativeLayout>
+
             </RelativeLayout>
 
 
@@ -76,9 +99,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginTop="10dp"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="1dp"
                 >
@@ -101,11 +124,11 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_user_icon"
                         android:layout_centerVertical="true"
+                        android:layout_marginBottom="10dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_below="@id/iv_user_icon"
-                        android:layout_marginBottom="10dp"
                         >
 
                         <TextView
@@ -122,41 +145,45 @@
                             android:id="@+id/layout_brief_location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_user_name"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="1dp"
-                            android:layout_below="@id/tv_user_name"
                             >
+
                             <ImageView
                                 android:id="@+id/tag_location"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:src="@drawable/location"
                                 android:layout_centerVertical="true"
+                                android:src="@drawable/location"
                                 />
+
                             <TextView
                                 android:id="@+id/tv_location"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@id/tag_location"
                                 android:layout_marginLeft="5dp"
+                                android:layout_toRightOf="@id/tag_location"
                                 />
+
                             <ImageView
                                 android:id="@+id/tag_web"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:src="@drawable/personal_web"
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@id/tv_location"
                                 android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/tv_location"
+                                android:src="@drawable/personal_web"
                                 />
+
                             <TextView
                                 android:id="@+id/tv_personal_web"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@id/tag_web"
                                 android:layout_marginLeft="5dp"
+                                android:layout_toRightOf="@id/tag_web"
                                 />
                         </RelativeLayout>
 
@@ -164,11 +191,11 @@
                             android:id="@+id/tv_user_bio"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_centerHorizontal="true"
                             android:layout_below="@id/layout_brief_location"
-                            android:textSize="12sp"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
                             android:textColor="@color/balck"
+                            android:textSize="12sp"
                             />
 
                     </RelativeLayout>
@@ -176,7 +203,6 @@
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
-
 
 
             <RelativeLayout
@@ -218,9 +244,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/hint_view2"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
                     >
 
                 </android.support.v7.widget.RecyclerView>

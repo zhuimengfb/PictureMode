@@ -1,7 +1,6 @@
 package com.fbi.picturemode.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,25 +62,8 @@ public class LocalPictureAdapter extends UltimateViewAdapter<LocalPictureAdapter
 
   @Override
   public void onBindViewHolder(LocalPictureViewHolder holder, final int position) {
-    ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
-    params.height = (int) (300 + Math.random() * 400);
-    holder.itemView.setLayoutParams(params);
-    if (!TextUtils.equals((String) holder.localPicture.getTag(), myDownloads.get(position)
-        .getLocalAddress())) {
-      Glide.with(MyApp.getContext()).load(myDownloads.get(position).getLocalAddress())
-          .into(holder.localPicture);
-      holder.localPicture.setTag(myDownloads.get(position).getLocalAddress());
-    }
-    holder.itemView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (mode == Constants.MANAGE_COLLECT_MODE_NORMAL && itemClickListener != null) {
-          itemClickListener.onItemClick(view, position);
-        } else if (mode == Constants.MANAGE_COLLECT_MODE_DELETE && onItemDeleteListener != null) {
-          onItemDeleteListener.onItemDelete(position);
-        }
-      }
-    });
+    Glide.with(MyApp.getContext()).load(myDownloads.get(position).getLocalAddress()).override
+        (400, 200).into(holder.localPicture);
     if (mode == Constants.MANAGE_COLLECT_MODE_NORMAL) {
       holder.delete.setVisibility(View.GONE);
     } else if (mode == Constants.MANAGE_COLLECT_MODE_DELETE) {
@@ -116,26 +98,6 @@ public class LocalPictureAdapter extends UltimateViewAdapter<LocalPictureAdapter
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
-  }
-
-  public interface OnItemClickListener {
-    void onItemClick(View view, int position);
-  }
-
-  private OnItemClickListener itemClickListener;
-
-  public void addOnItemClickListener(OnItemClickListener itemClickListener) {
-    this.itemClickListener = itemClickListener;
-  }
-
-  public interface OnItemDeleteListener {
-    void onItemDelete(int position);
-  }
-
-  private OnItemDeleteListener onItemDeleteListener;
-
-  public void addOnItemDeleteListener(OnItemDeleteListener onItemDeleteListener) {
-    this.onItemDeleteListener = onItemDeleteListener;
   }
 
 }

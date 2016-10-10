@@ -33,8 +33,6 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.OnClick;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
-import top.zibin.luban.Luban;
-import top.zibin.luban.OnCompressListener;
 
 /**
  * Author: FBi.
@@ -46,6 +44,7 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
 
   @BindView(R.id.iv_full_picture) ImageViewTouch fullImage;
   @BindView(R.id.iv_back) ImageView backImage;
+  @BindView(R.id.back_layout) RelativeLayout backLayout;
   @BindView(R.id.loading_layout) RelativeLayout loadingLayout;
   @BindView(R.id.iv_download) ImageView download;
   @BindView(R.id.iv_share) ImageView share;
@@ -71,6 +70,7 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
   private long waitingPeriod = 4000;
   private int currentMode = MODE_NET;
   private float currentWidthPixels = 0;
+  private float currentHeightPixels = 0;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,12 +121,16 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
     float height = dm.heightPixels * dm.density;
     currentWith = width;
     currentWidthPixels = dm.widthPixels;
+    currentHeightPixels = dm.heightPixels;
   }
 
   private void initLocalData() {
     showLoading();
     File file = new File(myDownload.getLocalAddress());
-    if (file.length() > compressThreshold) {
+    Glide.with(MyApp.getContext()).load(file).override((int)currentWidthPixels, (int)currentHeightPixels)
+        .into(fullImage);
+    stopLoading();
+    /*if (file.length() > compressThreshold) {
       Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
 
         @Override
@@ -148,10 +152,10 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
     } else {
       Glide.with(MyApp.getContext()).load(file).into(fullImage);
       stopLoading();
-    }
+    }*/
   }
 
-  @OnClick(R.id.iv_back)
+  @OnClick(R.id.back_layout)
   public void back() {
     finish();
   }

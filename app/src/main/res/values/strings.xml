@@ -44,5 +44,14 @@
     <string name="set_wallpaper_fail">Set wallpaper failed, Try again later</string>
     <string name="set_wallpaper">Set wallpaper</string>
     <string name="set_wallpaper_already">Set wallpaper already</string>
+    <string name="time">PUBLISH TIME</string>
+    <string name="dimension">DIMENSIONS</string>
+    <string name="model">MODEL</string>
+    <string name="exposure_time">EXPOSURE TIME</string>
+    <string name="aperture">APERTURE</string>
+    <string name="focal_length">FOCAL LENGTH</string>
+    <string name="iso">ISO</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="pic_title_info">PHOTO DETAILS</string>
 
 </resources>
