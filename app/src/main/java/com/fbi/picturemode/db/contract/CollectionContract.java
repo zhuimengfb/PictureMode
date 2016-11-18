@@ -17,5 +17,6 @@ public class CollectionContract {
   public static final String COVER_ID = "COVER_ID";
   public static final String RELATED_COLLECTION_IDS = "RELATED_COLLECTION_IDS";
   public static final String PHOTO_IDS = "PHOTO_IDS";
+  public static final String HTML = "HTML";
 
 }

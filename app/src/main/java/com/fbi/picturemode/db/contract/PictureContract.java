@@ -21,5 +21,6 @@ public class PictureContract {
   public static final String EXIF_MODEL = "EXIF_MODEL";
   public static final String EXIF_ISO = "EXIF_ISO";
   public static final String CREATED_TIME = "CREATED_TIME";
+  public static final String HTML = "HTML";
 
 }

@@ -28,6 +28,8 @@ public class UnsplashUser implements Serializable {
   private int totalCollections;
   @JsonProperty("profile_image")
   private UnsplashUserProfileLinks userProfileImage;
+  @JsonProperty("links")
+  private UnsplashUserLinks userLinks;
 
 
   public String getId() {
@@ -108,5 +110,13 @@ public class UnsplashUser implements Serializable {
 
   public void setUserProfileImage(UnsplashUserProfileLinks userProfileImage) {
     this.userProfileImage = userProfileImage;
+  }
+
+  public UnsplashUserLinks getUserLinks() {
+    return userLinks;
+  }
+
+  public void setUserLinks(UnsplashUserLinks userLinks) {
+    this.userLinks = userLinks;
   }
 }

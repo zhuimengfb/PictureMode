@@ -1,5 +1,7 @@
 package com.fbi.picturemode.activity;
 
+import android.Manifest;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,14 +25,19 @@ import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.views.LaunchView;
 import com.fbi.picturemode.presenter.LaunchPresenter;
+import com.fbi.picturemode.utils.Constants;
 import com.fbi.picturemode.utils.GlideUtils;
 import com.fbi.picturemode.utils.NetworkUtils;
+import com.fbi.picturemode.utils.SetWallpaperUtils;
 import com.fbi.picturemode.utils.sharedpreference.UserSharedPreferences;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
+import rx.functions.Action1;
 
 import static com.bumptech.glide.Glide.with;
 
@@ -52,20 +59,39 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   @BindView(R.id.loading_layout) RelativeLayout loadingLayout;
   private LaunchPresenter launchPresenter;
   private File localFile;
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     super.onCreate(savedInstanceState);
+    initFolder();
+    Log.d("path", Constants.BASE_PHOTO_PATH);
     launchPresenter.showLastPicture();
     if (NetworkUtils.isWifiNetwork() || isMobileNetworkAndUserPermitChange()) {
       launchPresenter.getRandomPicture();
     }
   }
 
+  private void initFolder() {
+    RxPermissions.getInstance(MyApp.getContext()).request(Manifest.permission
+        .WRITE_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
+      @Override
+      public void call(Boolean aBoolean) {
+        if (aBoolean) {
+          File file = new File(Constants.BASE_PHOTO_PATH);
+          if (!file.exists()) {
+            file.mkdirs();
+          }
+        }
+      }
+    });
+  }
+
   private boolean isMobileNetworkAndUserPermitChange() {
     return NetworkUtils.isMobileNetwork() && UserSharedPreferences
         .getInstance(MyApp.getContext()).getDownloadHighQualityPictureUsingMobileNetwork();
   }
+
   @Override
   public void setCustomLayout() {
     setContentView(R.layout.activity_launch);
@@ -78,7 +104,34 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
 
   @OnClick(R.id.bt_set_wallpaper)
   public void setWallpaper() {
-    launchPresenter.setWallpaper();
+    if (!NetworkUtils.isNetworkReachable()) {
+      Snackbar.make(launchPicture, R.string.please_check_network, Snackbar.LENGTH_SHORT).show();
+      return;
+    }
+    setWallpaper.setClickable(false);
+    RxPermissions.getInstance(MyApp.getContext()).request(Manifest.permission
+        .WRITE_EXTERNAL_STORAGE)
+        .subscribe(new Subscriber<Boolean>() {
+          @Override
+          public void onCompleted() {
+
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            e.printStackTrace();
+          }
+
+          @Override
+          public void onNext(Boolean aBoolean) {
+            if (aBoolean) {
+              launchPresenter.setWallpaper();
+            } else {
+              Snackbar.make(launchPicture, getString(R.string.please_grant_storage_permission),
+                  Snackbar.LENGTH_SHORT).show();
+            }
+          }
+        });
   }
 
   @Override
@@ -126,6 +179,7 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
     }
   }
 
+  @Override
   public void showLoading() {
     loadingLayout.setVisibility(View.VISIBLE);
   }
@@ -181,6 +235,11 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   }
 
   @Override
+  public void setWallpaper(String path) {
+    SetWallpaperUtils.setWallpaperBySystem(this, path);
+  }
+
+  @Override
   public void showUserName(String userName) {
     this.userName.setText(userName);
   }
@@ -194,8 +253,16 @@ public class LaunchActivity extends BaseActivity implements LaunchView {
   protected void onDestroy() {
     super.onDestroy();
     launchPresenter.onDestroy();
-    if (localFile != null) {
-//      boolean success = localFile.delete();
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == SetWallpaperUtils.SET_WALLPAPER_CODE) {
+      if (resultCode == RESULT_OK) {
+        showSetWallpaperSuccess();
+      }
     }
+    setWallpaper.setClickable(true);
+    super.onActivityResult(requestCode, resultCode, data);
   }
 }

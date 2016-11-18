@@ -28,4 +28,6 @@ public interface FullPictureView extends BaseView {
   void showSetWallpaperFail();
 
   void showAlreadySetWallpaper();
+
+  void setWallpaperFromNet(String code);
 }

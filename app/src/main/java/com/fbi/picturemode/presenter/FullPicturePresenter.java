@@ -5,10 +5,6 @@ import com.fbi.picturemode.db.contract.MyCollectContract;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.model.UnsplashModel;
 import com.fbi.picturemode.utils.Constants;
-import com.fbi.picturemode.utils.SetWallpaperUtils;
-
-import java.io.File;
-import java.io.IOException;
 
 import rx.Subscriber;
 
@@ -117,12 +113,13 @@ public class FullPicturePresenter extends BasePresenter<FullPictureView> {
         } else if (Constants.CODE_PICTURE_DOWNLOAD_ALREADY.equals(code)) {
           getView().showAlreadySetWallpaper();
         } else {
-          try {
+          getView().setWallpaperFromNet(code);
+          /*try {
             SetWallpaperUtils.setWallpaperFromFile(new File(code));
-            getView().showSetWallpaperSuccess();
+//            getView().showSetWallpaperSuccess();
           } catch (IOException e) {
             e.printStackTrace();
-          }
+          }*/
         }
       }
     }));

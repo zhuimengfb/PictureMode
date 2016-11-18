@@ -1,5 +1,7 @@
 package com.fbi.picturemode.utils;
 
+import android.os.Environment;
+
 import com.fbi.picturemode.MyApp;
 
 /**
@@ -11,6 +13,8 @@ import com.fbi.picturemode.MyApp;
 public class Constants {
 
   public static final String UNSPLASH_SERVER_URL = "https://api.unsplash.com";
+  public static final String UNSPLASH_SHARE_PHOTO_URL = "https://unsplash.com/photos/";
+  public static final String UNSPLASH_SHARE_COLLECTIONS_URL = "https://unsplash.com/collections/";
   public static final String UNSPLASH_CLIENT_ID =
       "c993023fb6928fc21d1986926f8ae03695fb7bd39766cdea129cf545d585250e";
   public static final String BUGLY_APP_ID = "c61c4d9906";
@@ -18,8 +22,10 @@ public class Constants {
   public static final int MANAGE_COLLECT_MODE_NORMAL = 0;
   public static final int MANAGE_COLLECT_MODE_DELETE = 1;
 
-  public static final String BASE_PHOTO_PATH = MyApp.getContext().getExternalFilesDir("photos")
-      .getAbsolutePath();
+  /* public static final String BASE_PHOTO_PATH = MyApp.getContext().getExternalFilesDir("photos")
+       .getAbsolutePath();*/
+  public static final String BASE_PHOTO_PATH = Environment.getExternalStoragePublicDirectory
+      (Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/ModePicture";
   public static final String BASE_PHOTO_TEMP_PATH = MyApp.getContext().getExternalFilesDir
       ("temp").getAbsolutePath();
 

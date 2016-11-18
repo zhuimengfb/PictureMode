@@ -8,15 +8,32 @@ android {
         applicationId "com.fbi.picturemode"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 12
-        versionName "1.1.2"
+        versionCode 16
+        versionName "1.1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi','armeabi-v7a','arm64-v8a' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
+    signingConfigs {
+        debug {
+            storeFile file("fbi.jks")
+            storePassword 'FUBO0324..'
+            keyAlias 'fbi'
+            keyPassword 'FUBO0324..'
+        }
+        release {
+            storeFile file("fbi.jks")
+            storePassword 'FUBO0324..'
+            keyAlias 'fbi'
+            keyPassword 'FUBO0324..'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -25,10 +42,11 @@ android {
     packagingOptions {
         exclude("META-INF/LICENSE")
     }
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -56,4 +74,20 @@ dependencies {
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
     compile 'top.zibin:Luban:1.0.8'
     compile 'com.afollestad.material-dialogs:core:0.9.0.2'
+    compile files('libs/MobCommons-2016.0830.1940.jar')
+    compile files('libs/MobTools-2016.0830.1940.jar')
+    compile files('libs/ShareSDK-Alipay-2.7.7.jar')
+    compile files('libs/ShareSDK-Facebook-2.7.7.jar')
+    compile files('libs/ShareSDK-Core-2.7.7.jar')
+    compile files('libs/ShareSDK-Instagram-2.7.7.jar')
+    compile files('libs/ShareSDK-QQ-2.7.7.jar')
+    compile files('libs/ShareSDK-QZone-2.7.7.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.7.7.jar')
+    compile files('libs/ShareSDK-Twitter-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.7.7.jar')
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
+    compile 'com.github.clans:fab:1.6.4'
 }

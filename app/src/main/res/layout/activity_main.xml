@@ -9,16 +9,43 @@
     android:background="#F3F3F3"
     tools:context="com.fbi.picturemode.MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
+        android:id="@+id/layout_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:theme="@style/AppTheme.PopupOverlay"
-        app:title="@string/app_name"
-        app:titleTextColor="@color/white"
-        >
-    </android.support.v7.widget.Toolbar>
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:theme="@style/AppTheme.PopupOverlay"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/white"
+            >
+
+        </android.support.v7.widget.Toolbar>
+        <RelativeLayout
+            android:id="@+id/layout_search"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:visibility="visible"
+            >
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/menu_search"
+            />
+        </RelativeLayout>
+    </RelativeLayout>
 
 
     <com.ashokvarma.bottomnavigation.BottomNavigationBar
@@ -35,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/navigation_bar"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/layout_toolbar"
         >
 
     </android.support.v4.view.ViewPager>

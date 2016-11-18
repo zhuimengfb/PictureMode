@@ -37,6 +37,9 @@ public class UnsplashCollection implements Serializable {
 
   private String relatedCollections;
 
+  @JsonProperty("links")
+  private UnsplashCollectionLinks collectionLinks;
+
   public int getId() {
     return id;
   }
@@ -139,5 +142,13 @@ public class UnsplashCollection implements Serializable {
 
   public void setRelatedCollections(String relatedCollections) {
     this.relatedCollections = relatedCollections;
+  }
+
+  public UnsplashCollectionLinks getCollectionLinks() {
+    return collectionLinks;
+  }
+
+  public void setCollectionLinks(UnsplashCollectionLinks collectionLinks) {
+    this.collectionLinks = collectionLinks;
   }
 }

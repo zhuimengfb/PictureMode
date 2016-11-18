@@ -78,6 +78,7 @@ public class SettingActivity extends BaseActivity {
       public void onItemClick(int itemId) {
         switch (itemId) {
           case ITEM_ID_CLEAR_CACHE:
+            Glide.get(SettingActivity.this).clearMemory();
             clearGlideCache();
             break;
           case ITEM_ID_SHOW_VERSION:
@@ -135,8 +136,8 @@ public class SettingActivity extends BaseActivity {
     settingItemList.add(new SettingItem(ITEM_ID_SHOW_PIC_PATH, getString(R.string.picture_path),
         UserSharedPreferences.getInstance(MyApp.getContext()).getUserPhotoBasePath(), "", false,
         false, SettingItem.TYPE_NORMAL, false));
-    settingItemList.add(new SettingItem(ITEM_ID_SHOW_PIC_SIZE, getString(R.string.picture_size),
-        "", "", false, false, SettingItem.TYPE_NORMAL, false));
+//    settingItemList.add(new SettingItem(ITEM_ID_SHOW_PIC_SIZE, getString(R.string.picture_size),
+//        "", "", false, false, SettingItem.TYPE_NORMAL, false));
     settingItemList.add(new SettingItem(ITEM_ID_BLANK, "", "", "", false, false, SettingItem
         .TYPE_BLANK, false));
     settingItemList.add(new SettingItem(ITEM_ID_SHOW_VERSION, getString(R.string.app_version),

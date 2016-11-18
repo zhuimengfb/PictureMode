@@ -27,8 +27,7 @@ public class UnsplashCollectionSQLiteHelper extends SQLiteOpenHelper {
         .DESCRIPTION + " varchar, " + CollectionContract.PHOTO_IDS + " varchar, " +
         CollectionContract.PUBLISH_TIME + " integer, " + CollectionContract
         .RELATED_COLLECTION_IDS + " varchar, " + CollectionContract.TITLE + " varchar, " +
-        CollectionContract.TOTAL_PHOTOS + " integer, " + CollectionContract.USER_ID +
-        " varchar)");
+        CollectionContract.TOTAL_PHOTOS + " integer, " + CollectionContract.USER_ID + " varchar)");
   }
 
   @Override

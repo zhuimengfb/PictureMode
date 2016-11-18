@@ -20,6 +20,7 @@ public class UnsplashSharedPreferences {
   private static final String KEY_LAST_RANDOM_COLOR = "last_random_color";
   private static final String KEY_LAST_LOCAL_PATH = "LAST_LOCAL_PATH";
   private static final String KEY_CLIENT_ID_INDEX="key_client_id_index";
+  private static final String KEY_LAST_PICTURE_ID = "last_picture_id";
   private static UnsplashSharedPreferences unsplashPreferences;
   private static SharedPreferences sharedPreferences;
 
@@ -98,5 +99,13 @@ public class UnsplashSharedPreferences {
 
   public void updateClientIdIndex(int index) {
     sharedPreferences.edit().putInt(KEY_CLIENT_ID_INDEX, index).apply();
+  }
+
+  public void updateLastPictureId(String id) {
+    sharedPreferences.edit().putString(KEY_LAST_PICTURE_ID, id).apply();
+  }
+
+  public String getLastPictureId() {
+    return sharedPreferences.getString(KEY_LAST_PICTURE_ID, "");
   }
 }

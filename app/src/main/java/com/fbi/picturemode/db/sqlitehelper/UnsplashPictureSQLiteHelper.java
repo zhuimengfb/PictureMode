@@ -30,7 +30,8 @@ public class UnsplashPictureSQLiteHelper extends SQLiteOpenHelper {
         " varchar, " + PictureContract.HEIGHT + " integer, " + PictureContract.LIKES +
         " integer, " + PictureContract.LINK_RAW + " varchar, " + PictureContract.LINK_FULL +
         " varchar, " + PictureContract.LINK_REGULAR + " varchar, " + PictureContract.USER_ID +
-        " varchar, " + PictureContract.WIDTH + " integer, "+PictureContract.CREATED_TIME+" integer)");
+        " varchar, " + PictureContract.WIDTH + " integer, " + PictureContract.CREATED_TIME + " " +
+        "integer)");
   }
 
   @Override

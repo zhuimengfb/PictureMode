@@ -21,7 +21,6 @@ import com.fbi.picturemode.adapter.UserItemRecyclerAdapter;
 import com.fbi.picturemode.entity.UserItem;
 import com.fbi.picturemode.utils.sharedpreference.UserSharedPreferences;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +71,7 @@ public class MeFragment extends BaseFragment {
 
   private void initData() {
     String url = UserSharedPreferences.getInstance(MyApp.getContext()).getUserIconUrl();
-    Glide.with(this).load(new File(url)).error(R.drawable.default_avatar).bitmapTransform(new
+    Glide.with(this).load(url).error(R.drawable.default_avatar).bitmapTransform(new
         CropCircleTransformation(MyApp.getContext())).into(userIcon);
     userName.setText(getString(R.string.app_name));
     userItems.add(new UserItem(getString(R.string.my_download), "", R.mipmap.tag_download,

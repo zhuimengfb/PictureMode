@@ -2,6 +2,8 @@ package com.fbi.picturemode.model.apiservice;
 
 import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.entity.UnsplashPicture;
+import com.fbi.picturemode.entity.UnsplashSearchCollection;
+import com.fbi.picturemode.entity.UnsplashSearchPhoto;
 
 import java.util.List;
 
@@ -45,4 +47,11 @@ public interface UnsplashApiService {
 
   @GET("/collections/{id}/related")
   Observable<List<UnsplashCollection>> getRelatedCollections(@Path("id") int collectionId);
+
+  @GET("/search/photos")
+  Observable<UnsplashSearchPhoto> queryPhotos(@Query("query") String keyWord,@Query("page") int page);
+
+  @GET("/search/collections")
+  Observable<UnsplashSearchCollection> queryCollections(@Query("query") String keyWord, @Query
+      ("page") int page);
 }

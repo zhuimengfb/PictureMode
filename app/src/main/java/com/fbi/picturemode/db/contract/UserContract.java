@@ -18,4 +18,5 @@ public class UserContract {
   public static final String TOTAL_LIKES = "TOTAL_LIKES";
   public static final String TOTAL_COLLECTIONS = "TOTAL_COLLECTIONS";
   public static final String PROFILE_IMAGE_LARGE = "PROFILE_IMAGE_LARGE";
+  public static final String HTML = "HTML";
 }

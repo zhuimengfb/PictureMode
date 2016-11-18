@@ -29,7 +29,7 @@ public class GlideUtils {
       pictureBackgroundColor) {
     if (imageView != null) {
       imageView.setBackgroundColor(Color.parseColor(pictureBackgroundColor));
-      Glide.with(MyApp.getContext()).load(Uri.parse(pictureUrl)).listener(new RequestListener<Uri, GlideDrawable>() {
+      Glide.with(MyApp.getContext()).load(Uri.parse(pictureUrl)).crossFade(500).listener(new RequestListener<Uri, GlideDrawable>() {
 
         @Override
         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean

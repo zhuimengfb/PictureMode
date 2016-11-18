@@ -13,6 +13,8 @@ import com.fbi.picturemode.entity.MyCollect;
 import com.fbi.picturemode.entity.MyDownload;
 import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.entity.UnsplashPicture;
+import com.fbi.picturemode.entity.UnsplashSearchCollection;
+import com.fbi.picturemode.entity.UnsplashSearchPhoto;
 import com.fbi.picturemode.entity.UnsplashUser;
 import com.fbi.picturemode.model.apimanager.UnsplashApiManager;
 import com.fbi.picturemode.utils.Constants;
@@ -42,6 +44,13 @@ public class UnsplashModel extends BaseModel {
 
   public Subscription getRandomPicture(Subscriber<UnsplashPicture> subscriber) {
     return UnsplashApiManager.getRandomPicture()
+        .doOnNext(new Action1<UnsplashPicture>() {
+          @Override
+          public void call(UnsplashPicture unsplashPicture) {
+            UnsplashPictureDataHelper.getInstance(MyApp.getContext()).insertPicture
+                (unsplashPicture);
+          }
+        })
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(subscriber);
@@ -153,17 +162,17 @@ public class UnsplashModel extends BaseModel {
 
   private Func1<List<UnsplashCollection>, List<UnsplashCollection>> filer = new
       Func1<List<UnsplashCollection>, List<UnsplashCollection>>() {
-    @Override
-    public List<UnsplashCollection> call(List<UnsplashCollection> collections) {
-      List<UnsplashCollection> collectionList = new ArrayList<UnsplashCollection>();
-      for (UnsplashCollection collection : collections) {
-        if (collection != null && collection.getCover() != null) {
-          collectionList.add(collection);
+        @Override
+        public List<UnsplashCollection> call(List<UnsplashCollection> collections) {
+          List<UnsplashCollection> collectionList = new ArrayList<UnsplashCollection>();
+          for (UnsplashCollection collection : collections) {
+            if (collection != null && collection.getCover() != null) {
+              collectionList.add(collection);
+            }
+          }
+          return collectionList;
         }
-      }
-      return collectionList;
-    }
-  };
+      };
 
 
   public Subscription getRelatedCollections(final int collectionId,
@@ -368,6 +377,24 @@ public class UnsplashModel extends BaseModel {
           }
         })
         .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(subscriber);
+  }
+
+
+  public Subscription queryPhotos(String keyWord, int page, Subscriber<UnsplashSearchPhoto>
+      subscriber) {
+    return UnsplashApiManager.queryPhotos(keyWord, page)
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(subscriber);
+  }
+
+  public Subscription queryCollections(String keyWord, int page,
+                                       Subscriber<UnsplashSearchCollection>
+      subscriber) {
+    return UnsplashApiManager.queryCollections(keyWord, page)
+        .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(subscriber);
   }

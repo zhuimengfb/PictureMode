@@ -1,5 +1,6 @@
 package com.fbi.picturemode.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,14 +26,20 @@ import com.fbi.picturemode.db.UnsplashPictureDataHelper;
 import com.fbi.picturemode.entity.MyDownload;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.presenter.FullPicturePresenter;
+import com.fbi.picturemode.utils.Constants;
+import com.fbi.picturemode.utils.NetworkUtils;
 import com.fbi.picturemode.utils.SetWallpaperUtils;
+import com.fbi.picturemode.utils.ShareUtil;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import rx.Subscriber;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 /**
  * Author: FBi.
@@ -127,32 +134,31 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
   private void initLocalData() {
     showLoading();
     File file = new File(myDownload.getLocalAddress());
-    Glide.with(MyApp.getContext()).load(file).override((int)currentWidthPixels, (int)currentHeightPixels)
-        .into(fullImage);
     stopLoading();
-    /*if (file.length() > compressThreshold) {
-      Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
+    if (file.length() > compressThreshold) {
+      Luban.get(this).load(file).putGear(Luban.THIRD_GEAR)
+          .setCompressListener(new OnCompressListener() {
 
-        @Override
-        public void onStart() {
-          showLoading();
-        }
+            @Override
+            public void onStart() {
+              showLoading();
+            }
 
-        @Override
-        public void onSuccess(File file) {
-          Glide.with(MyApp.getContext()).load(file).into(fullImage);
-          stopLoading();
-        }
+            @Override
+            public void onSuccess(File file) {
+              Glide.with(MyApp.getContext()).load(file).into(fullImage);
+              stopLoading();
+            }
 
-        @Override
-        public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-        }
-      }).launch();
+            }
+          }).launch();
     } else {
       Glide.with(MyApp.getContext()).load(file).into(fullImage);
       stopLoading();
-    }*/
+    }
   }
 
   @OnClick(R.id.back_layout)
@@ -172,44 +178,77 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
     presenter.downloadPicture(picture);
   }
 
-  private void setWallpaperFromFile(File fromFile) {
-    try {
-      SetWallpaperUtils.setWallpaperFromFile(fromFile);
-      showSetWallpaperSuccess();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  @OnClick(R.id.layout_share)
+  public void share() {
+    ShareUtil.wxShare(getString(R.string.app_name) + "-" + getString(R.string
+        .share_picture_title, picture.getUnsplashUser().getName()), picture
+        .getUnsplashPictureLinks().getRegular(), picture.getUnsplashUser().getBio(), Constants
+        .UNSPLASH_SHARE_PHOTO_URL + picture.getId()).share(MyApp.getContext());
   }
+
 
   @OnClick(R.id.layout_set_wallpaper)
   public void setWallpaper() {
-    setWallpaperLayout.setClickable(false);
-    if (currentMode == MODE_LOCAL) {
-      File file = new File(myDownload.getLocalAddress());
-      setWallpaperFromFile(file);
-      showSetWallpaperSuccess();
-    } else {
-      showLoading();
-      presenter.setWallpaperFromNet(picture);
-    }
+    RxPermissions.getInstance(MyApp.getContext()).request(Manifest.permission
+        .WRITE_EXTERNAL_STORAGE).subscribe(new Subscriber<Boolean>() {
+
+
+      @Override
+      public void onCompleted() {
+
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onNext(Boolean aBoolean) {
+        if (aBoolean) {
+          setWallpaperLayout.setClickable(false);
+          if (currentMode == MODE_LOCAL) {
+            showLoading();
+            SetWallpaperUtils.setWallpaperBySystem(FullPictureActivity.this, myDownload
+                .getLocalAddress());
+          } else {
+            if (!NetworkUtils.isNetworkReachable()) {
+              Snackbar.make(fullImage, R.string.please_check_network, Snackbar.LENGTH_SHORT).show();
+              setWallpaperLayout.setClickable(true);
+              return;
+            }
+            showLoading();
+            presenter.setWallpaperFromNet(picture);
+          }
+        }
+      }
+    });
   }
 
   @Override
   public void showSetWallpaperSuccess() {
+    stopLoading();
     Snackbar.make(operationLayout, R.string.set_wallpaper_success, Snackbar.LENGTH_SHORT).show();
     setWallpaperLayout.setClickable(true);
   }
 
   @Override
   public void showSetWallpaperFail() {
+    stopLoading();
     Snackbar.make(operationLayout, R.string.set_wallpaper_fail, Snackbar.LENGTH_SHORT).show();
     setWallpaperLayout.setClickable(true);
   }
 
   @Override
   public void showAlreadySetWallpaper() {
+    stopLoading();
     Snackbar.make(operationLayout, R.string.set_wallpaper_already, Snackbar.LENGTH_SHORT).show();
     setWallpaperLayout.setClickable(true);
+  }
+
+  @Override
+  public void setWallpaperFromNet(String code) {
+    SetWallpaperUtils.setWallpaperBySystem(this, code);
   }
 
   private void initEvent() {
@@ -241,8 +280,10 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
         if (currentWidthPixels != 0) {
           float scale = currentWidthPixels / picWidth;
           Log.d("scale", scale + "");
-          fullImage.setScaleX(scale);
-          fullImage.setScaleY(scale);
+          if (scale > 1) {
+            fullImage.setScaleX(scale);
+            fullImage.setScaleY(scale);
+          }
         }
         return false;
       }
@@ -325,4 +366,16 @@ public class FullPictureActivity extends BaseActivity implements FullPictureView
     loadingLayout.setVisibility(View.GONE);
   }
 
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    Log.d("result", "onActivityResult: " + resultCode);
+    if (requestCode == SetWallpaperUtils.SET_WALLPAPER_CODE) {
+      if (resultCode == RESULT_OK) {
+        showSetWallpaperSuccess();
+      }
+    }
+    setWallpaperLayout.setClickable(true);
+    stopLoading();
+    super.onActivityResult(requestCode, resultCode, data);
+  }
 }

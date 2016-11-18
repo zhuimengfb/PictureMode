@@ -3,7 +3,6 @@ package com.fbi.picturemode.presenter;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.activity.views.LaunchView;
@@ -12,13 +11,10 @@ import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.model.UnsplashModel;
 import com.fbi.picturemode.utils.Constants;
 import com.fbi.picturemode.utils.FileUtils;
-import com.fbi.picturemode.utils.SetWallpaperUtils;
 import com.fbi.picturemode.utils.sharedpreference.UnsplashSharedPreferences;
 import com.fbi.picturemode.utils.sharedpreference.UserSharedPreferences;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -37,6 +33,8 @@ import static com.bumptech.glide.Glide.with;
 public class LaunchPresenter extends BasePresenter<LaunchView> {
 
   private UnsplashModel unsplashModel;
+  private String lastPictureLink = "";
+  private String lastPictureId = "";
 
   public LaunchPresenter(LaunchView baseView) {
     super(baseView);
@@ -71,6 +69,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
       @Override
       public void onNext(final UnsplashPicture unsplashPicture) {
         if (getView() != null) {
+          final String id = unsplashPicture.getId();
           final String pictureUrl = unsplashPicture.getUnsplashPictureLinks().getFull();
           final String color = unsplashPicture.getColor();
           final String userIconUrl = unsplashPicture.getUnsplashUser().getUserProfileImage()
@@ -129,6 +128,7 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
                     unsplashSharedPreferences.updateLastRandomColor(color);
                     unsplashSharedPreferences.updateLastRandomPictureLinkRegular(unsplashPicture
                         .getUnsplashPictureLinks().getRegular());
+                    unsplashSharedPreferences.updateLastPictureId(id);
                     String location = "";
                     if (unsplashLocation != null) {
                       location = unsplashLocation.getCountry() + " " + unsplashLocation.getCity();
@@ -150,19 +150,24 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
     if (getView() != null) {
       UnsplashSharedPreferences preferences = UnsplashSharedPreferences.getInstance(MyApp
           .getContext());
+      lastPictureLink = preferences.getLastRandomPictureLink();
+      String lastLocalPath = preferences.getLastLocalPath();
+      lastPictureId = preferences.getLastPictureId();
       if (UserSharedPreferences.getInstance(MyApp.getContext()).isFirstLaunch()) {
         getView().showDefaultPicture();
         getView().hideSetWallpaper();
         UserSharedPreferences.getInstance(MyApp.getContext()).setFirstLauncFalse();
-      } else if (TextUtils.isEmpty(preferences.getLastRandomPictureLink()) && TextUtils.isEmpty
-          (preferences.getLastLocalPath())) {
+      } else if (TextUtils.isEmpty(lastPictureLink) && TextUtils.isEmpty(lastLocalPath)) {
         getView().showDefaultPicture();
         getView().hideSetWallpaper();
       } else {
+        if (TextUtils.isEmpty(lastPictureId)) {
+          getView().hideSetWallpaper();
+        }
         getView().showLocalPicture(preferences.getLastLocalPath(), preferences
             .getLastRandomPictureLink(), preferences.getLastRandomColor());
         UserSharedPreferences.getInstance(MyApp.getContext()).updateUserIconUrl
-            (preferences.getLastLocalPath());
+            (preferences.getKeyLastRandomPictureLinkRegular());
         getView().showUserIcon(preferences.getLastRandomUserLink());
         getView().showLocation(preferences.getLastRandomLocation());
         getView().showUserName(preferences.getLastRandomUserName());
@@ -171,65 +176,30 @@ public class LaunchPresenter extends BasePresenter<LaunchView> {
   }
 
   public void setWallpaper() {
-    UnsplashSharedPreferences preferences = UnsplashSharedPreferences.getInstance(MyApp
-        .getContext());
-    File file = new File(preferences.getLastLocalPath());
-    if (file.exists()) {
-      try {
-        SetWallpaperUtils.setWallpaperFromFile(file);
-        getView().showSetWallpaperSuccess();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    } else {
-      getSubscriptions().add(Observable.just(preferences.getLastRandomPictureLink())
-          .map(new Func1<String, File>() {
-            @Override
-            public File call(String s) {
-              try {
-                return Glide.with(MyApp.getContext()).load(s).downloadOnly
-                    (Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              } catch (ExecutionException e) {
-                e.printStackTrace();
-              }
-              return null;
-            }
-          })
-          .subscribeOn(Schedulers.newThread())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Subscriber<File>() {
-            @Override
-            public void onCompleted() {
+    getView().showLoading();
+    getSubscriptions().add(unsplashModel.downloadPicture(lastPictureLink,
+        lastPictureId, new Subscriber<String>() {
 
-            }
+          @Override
+          public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
-              if (getView() != null) {
-                getView().showSetWallpaperFail();
-              }
-            }
+          }
 
-            @Override
-            public void onNext(File file) {
-              if (file != null) {
-                try {
-                  SetWallpaperUtils.setWallpaperFromFile(file);
-                  if (getView() != null) {
-                    getView().showSetWallpaperSuccess();
-                  }
-                  file.delete();
-                } catch (IOException e) {
-                  e.printStackTrace();
-                  if (getView() != null) {
-                    getView().showSetWallpaperFail();
-                  }
-                }
-              }
+          @Override
+          public void onError(Throwable e) {
+            e.printStackTrace();
+          }
+
+          @Override
+          public void onNext(String code) {
+            getView().hideLoading();
+            if (Constants.CODE_PICTURE_DOWNLOAD_FAIL.equals(code)) {
+              getView().showSetWallpaperFail();
+            } else if (Constants.CODE_PICTURE_DOWNLOAD_ALREADY.equals(code)) {
+            } else {
+              getView().setWallpaper(code);
             }
-          }));
-    }
+          }
+        }));
   }
 }

@@ -73,10 +73,12 @@ public class UserItemRecyclerAdapter extends UltimateViewAdapter<UserItemRecycle
   @Override
   public void onBindViewHolder(UserItemViewHolder holder, int position) {
     final int temPosition = position;
-    /*Glide.with(MyApp.getContext()).load(UriUtils.getDrawableUri(userItems.get(position)
-        .getIconRes())).into(holder.userItemIcon);*/
-    Glide.with(MyApp.getContext()).load(userItems.get(position).getIconRes()).into(holder
-        .userItemIcon);
+    try {
+      Glide.with(MyApp.getContext()).load(userItems.get(position).getIconRes()).into(holder
+          .userItemIcon);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     holder.userItemIcon.setImageResource(userItems.get(position).getIconRes());
     holder.userItemTitle.setText(userItems.get(position).getTitle());
     if (!TextUtils.isEmpty(userItems.get(position).getSubTitle())) {

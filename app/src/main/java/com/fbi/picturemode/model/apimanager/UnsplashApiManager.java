@@ -2,6 +2,8 @@ package com.fbi.picturemode.model.apimanager;
 
 import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.entity.UnsplashPicture;
+import com.fbi.picturemode.entity.UnsplashSearchCollection;
+import com.fbi.picturemode.entity.UnsplashSearchPhoto;
 import com.fbi.picturemode.model.apiservice.UnsplashApiService;
 
 import java.util.List;
@@ -51,5 +53,13 @@ public class UnsplashApiManager extends BaseApiManager {
 
   public static Observable<List<UnsplashCollection>> getRelatedCollections(int collectionId) {
     return unsplashApiService.getRelatedCollections(collectionId);
+  }
+
+  public static Observable<UnsplashSearchPhoto> queryPhotos(String keyWord,int page) {
+    return unsplashApiService.queryPhotos(keyWord,page);
+  }
+
+  public static Observable<UnsplashSearchCollection> queryCollections(String keyWord,int page) {
+    return unsplashApiService.queryCollections(keyWord,page);
   }
 }

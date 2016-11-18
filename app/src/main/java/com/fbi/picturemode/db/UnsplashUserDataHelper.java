@@ -18,7 +18,7 @@ import com.fbi.picturemode.entity.UnsplashUserProfileLinks;
 
 public class UnsplashUserDataHelper {
 
-  private static final String DB_NAME = UnsplashUserSQLiteHelper.TB_NAME+".db";
+  private static final String DB_NAME = UnsplashUserSQLiteHelper.TB_NAME + ".db";
   private static final int DB_VERSION = 1;
   private static SQLiteDatabase mSQLiteDatabase;
   private static UnsplashUserSQLiteHelper unsplashUserSQLiteHelper;

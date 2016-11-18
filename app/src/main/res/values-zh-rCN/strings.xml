@@ -53,5 +53,15 @@
     <string name="iso">ISO</string>
     <string name="confirm">确定</string>
     <string name="pic_title_info">图片详情</string>
+    <string name="share_picture_title"> 来自 <xliff:g id="name">%s</xliff:g> 的杰作</string>
+    <string name="share_collection_title"> 来自 <xliff:g id="name">%s</xliff:g> 的合集</string>
+    <string name="please_grant_storage_permission">请授予访问设备存储权限</string>
+    <string name="action_filter">顺序</string>
+    <string name="action_search">搜索</string>
+    <string name="newest">最新</string>
+    <string name="search_title">搜索精彩图片或合集</string>
+    <string name="photo">图片</string>
+    <string name="search_photo_collection">搜索图片或合集</string>
+
 
 </resources>

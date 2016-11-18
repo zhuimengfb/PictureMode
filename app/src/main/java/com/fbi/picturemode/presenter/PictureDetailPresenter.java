@@ -46,7 +46,7 @@ public class PictureDetailPresenter extends BasePresenter<DetailPictureView> {
 
       @Override
       public void onError(Throwable e) {
-
+        e.printStackTrace();
       }
 
       @Override

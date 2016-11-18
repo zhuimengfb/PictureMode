@@ -6,18 +6,6 @@
     android:background="@color/white"
     >
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:text="124"
-        android:textSize="18sp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="40dp"
-        android:textColor="@color/gray"
-        />
-
     <Switch
         android:id="@+id/setting_switch"
         android:layout_width="wrap_content"
@@ -26,6 +14,20 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="12dp"
+        android:layout_toLeftOf="@id/setting_switch"
+        android:text="124"
+        android:textColor="@color/gray"
+        android:textSize="18sp"
+        />
+
 
     <View
         android:layout_width="match_parent"

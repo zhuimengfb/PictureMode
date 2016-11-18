@@ -43,6 +43,9 @@ public class UnsplashPicture implements Serializable {
   @JsonProperty("categories")
   private List<UnsplashCategory> categories;
 
+  @JsonProperty("link")
+  private UnsplashPhotoLinks photoLinks;
+
 
   public String getId() {
     return id;
@@ -154,5 +157,13 @@ public class UnsplashPicture implements Serializable {
 
   public void setCreatedTime(Date createdTime) {
     this.createdTime = createdTime;
+  }
+
+  public UnsplashPhotoLinks getPhotoLinks() {
+    return photoLinks;
+  }
+
+  public void setPhotoLinks(UnsplashPhotoLinks photoLinks) {
+    this.photoLinks = photoLinks;
   }
 }

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fbi.picturemode.MyApp;
 import com.fbi.picturemode.R;
 import com.fbi.picturemode.activity.views.DetailCollectionView;
 import com.fbi.picturemode.activity.widget.MyLinearLayoutManager;
@@ -26,8 +27,10 @@ import com.fbi.picturemode.entity.UnsplashCollection;
 import com.fbi.picturemode.entity.UnsplashPicture;
 import com.fbi.picturemode.presenter.DetailCollectionPresenter;
 import com.fbi.picturemode.presenter.MyCollectPresenter;
+import com.fbi.picturemode.utils.Constants;
 import com.fbi.picturemode.utils.GlideUtils;
 import com.fbi.picturemode.utils.NetworkUtils;
+import com.fbi.picturemode.utils.ShareUtil;
 import com.fbi.picturemode.utils.StatusBarUtils;
 
 import java.util.ArrayList;
@@ -107,6 +110,12 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
         new NetworkUtils().isNetworkAvailable(view);
         DetailPictureActivity.toThisActivity(DetailCollectionActivity.this, unsplashPictures.get
             (position));
+      }
+    });
+    adapter.addOnItemCollectListener(new NewPictureRecyclerAdapter.OnItemCollectListener() {
+      @Override
+      public void onItemCollect(int position) {
+        collectPresenter.collectPicture(unsplashPictures.get(position).getId());
       }
     });
     recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -294,6 +303,11 @@ public class DetailCollectionActivity extends BaseActivity implements DetailColl
         collectPresenter.collectCollections(unsplashCollection.getId());
         break;
       case R.id.share:
+        ShareUtil.wxShare(getString(R.string.app_name) + "-" + getString(R.string
+            .share_collection_title, unsplashCollection.getUser().getName()), unsplashCollection
+            .getCover().getUnsplashPictureLinks().getRegular(), unsplashCollection.getUser().getBio
+            (), Constants.UNSPLASH_SHARE_COLLECTIONS_URL + unsplashCollection.getId()).share
+            (MyApp.getContext());
         break;
     }
     return super.onOptionsItemSelected(item);
